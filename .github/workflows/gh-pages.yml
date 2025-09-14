@@ -22,7 +22,7 @@ jobs:
 
       - name: Publish Blazor WASM
         run: |
-          dotnet publish src/webApp/NuminaBit.Web.App.csproj -c Release -o release
+          dotnet publish src/NuminaBit.Web.App/NuminaBit.Web.App.csproj -c Release -o release
 
       - name: Fix base href
         run: |
@@ -34,7 +34,7 @@ jobs:
           fi
 
       - name: Deploy to gh-pages
-        uses: JamesIves/[email protected]
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages         # artık gh-pages branch var
           folder: release/wwwroot
