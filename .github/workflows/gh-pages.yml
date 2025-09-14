@@ -2,7 +2,7 @@ name: Deploy Blazor WASM to GitHub Pages
 
 on:
   push:
-    branches: [ master ]   # master’a push olduğunda tetiklenecek
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -27,18 +27,19 @@ jobs:
       - name: Fix base href
         run: |
           REPO=${{ github.repository }}
-          REPO=${REPO##*/}  
+          REPO=${REPO##*/}
           FILE=release/wwwroot/index.html
           if [ -f "$FILE" ]; then
             sed -i "s|<base href=\"/\" />|<base href=\"/$REPO/\" />|g" "$FILE" || true
           fi
-  
+      
+      - name: Disable Jekyll
+        # Create an empty .nojekyll file inside the directory to be deployed.
+        run: echo > release/wwwroot/.nojekyll
+      
       - name: Deploy to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages         # artık gh-pages branch var
+          branch: gh-pages
           folder: release/wwwroot
-          clean: true              # sadece gh-pages branch temizlenir
-          
-      - name: Disable Jekyll
-        run: touch wwwroot/.nojekyll
+          clean: true
