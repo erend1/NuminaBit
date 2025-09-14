@@ -32,10 +32,13 @@ jobs:
           if [ -f "$FILE" ]; then
             sed -i "s|<base href=\"/\" />|<base href=\"/$REPO/\" />|g" "$FILE" || true
           fi
-
+  
       - name: Deploy to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages         # artık gh-pages branch var
           folder: release/wwwroot
           clean: true              # sadece gh-pages branch temizlenir
+          
+      - name: Disable Jekyll
+        run: touch wwwroot/.nojekyll
