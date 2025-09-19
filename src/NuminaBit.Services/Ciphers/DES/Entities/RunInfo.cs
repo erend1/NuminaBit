@@ -1,11 +1,11 @@
 ﻿namespace NuminaBit.Services.Ciphers.DES.Entities
 {
-    public sealed class RunInfo
+    public sealed record RunInfo
     {
-        public ulong IPOut { get; set; }
-        public ulong FPIn { get; set; }
-        public ulong FinalCipher { get; set; }
-        public List<RoundSnap> Rounds { get; set; } = []; // 0..16
-        public KeySchedule KeySchedule { get; set; } = new();
+        public ulong IPOut { get; init; }
+        public ulong FPIn { get; init; }
+        public ulong FinalCipher { get; init; }
+        public List<RoundSnap> Rounds { get; init; } = []; // 0..16
+        public KeySchedule KeySchedule { get; init; } = new();
     }
 }

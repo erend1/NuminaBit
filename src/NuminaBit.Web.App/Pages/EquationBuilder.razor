@@ -1,0 +1,72 @@
+﻿@page "/equation-builder"
+
+@inject NuminaBit.Services.Ciphers.DES.Interfaces.IEquationBuilder _builder
+@inject ILogger<EquationBuilder> Log
+
+<RadzenCard Style="margin:1rem;">
+  <ChildContent>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <RadzenFieldset Text="Select S-box, α, β">
+          <div class="space-y-2">
+            <RadzenDropDown @bind-Value="SelectedSBoxIndex" Data="@SBoxOptions" TextProperty="Text" ValueProperty="Value" Style="width:100%" />
+            <div class="flex gap-2">
+              <RadzenTextBox Placeholder="α (binary 6 bit, e.g. 100100)" @bind-Value="alphaBin" Style="width:60%"/>
+              <RadzenTextBox Placeholder="β (binary 4 bit, e.g. 0001)" @bind-Value="betaBin" Style="width:30%"/>
+            </div>
+            <div class="flex gap-2 mt-2">
+              <RadzenButton Text="Build" Click="Build" ButtonStyle="ButtonStyle.Primary" />
+              <RadzenButton Text="Clear" Click="Clear" />
+            </div>
+            <div class="text-sm text-gray-500 mt-2">Alpha: 6-bit (MSB first). Beta: 4-bit (MSB first).</div>
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Mapping Info">
+          @if (mapping is null)
+          {
+            <div class="p-2 text-sm text-gray-500">Henüz oluşturulmadı.</div>
+          }
+          else
+          {
+            <div class="text-sm space-y-1 p-2">
+              <div><strong>S-box:</strong> S@(mapping.SBoxIndex+1)</div>
+              <div><strong>Alpha bits set => R bits:</strong> @String.Join(", ", alphaRList)</div>
+              <div><strong>Beta bits set => F outputs:</strong> @String.Join(", ", betaFList)</div>
+              <div><strong>Subkey(48) positions:</strong> @String.Join(", ", mapping.SubkeyPositions)</div>
+            </div>
+          }
+        </RadzenFieldset>
+      </div>
+
+      <div class="space-y-3">
+        <RadzenFieldset Text="Approximation Formula (human readable)">
+          <div class="p-2">
+            @if (mapping is null)
+            {
+              <div class="text-sm text-gray-500">Build tuşuna basın.</div>
+            }
+            else
+            {
+              <pre>@equationText</pre>
+            }
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="LaTeX / Pretty">
+          <div class="p-2">
+            @if (mapping is not null)
+            {
+              <div class="text-xs text-gray-600 mb-2">Copy-paste this into your slides (LaTeX-ish):</div>
+              <code>$$ @latexEquation $$</code>
+            }
+            else
+            {
+              <div class="text-sm text-gray-500">Henüz bir denklem yok.</div>
+            }
+          </div>
+        </RadzenFieldset>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenCard>

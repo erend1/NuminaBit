@@ -4,7 +4,7 @@ using NuminaBit.Services.Ciphers.DES.Interfaces;
 
 namespace NuminaBit.Services.Ciphers.DES
 {
-    public sealed class DesCore: IDES
+    public sealed class Core: IDES
     {
         private readonly static Permutations _permutations = new()
         {
@@ -61,23 +61,19 @@ namespace NuminaBit.Services.Ciphers.DES
 
         public RunInfo EncryptWithSnapshots(ulong plain, ulong key64)
         {
-            var run = new RunInfo();
-
             // IP
             ulong ip = Permute(plain, Permutations.Initial, 64);
-            run.IPOut = ip;
             uint L = (uint)(ip >> 32);
             uint R = (uint)(ip & 0xFFFFFFFF);
 
             // Key schedule
             var sched = BuildKeySchedule(key64);
-            run.KeySchedule = sched;
 
-            run.Rounds = new List<RoundSnap>(capacity: 17)
+            // 16 Rounds of DES
+            var rounds = new List<RoundSnap>(capacity: 17)
             {
                 new() { L = L, R = R } // round 0
             };
-
             for (int r = 1; r <= 16; r++)
             {
                 var sub = sched.SubKeys[r - 1];
@@ -88,7 +84,7 @@ namespace NuminaBit.Services.Ciphers.DES
                 uint newL = R;
                 uint newR = L ^ pOut;
 
-                run.Rounds.Add(new RoundSnap
+                rounds.Add(new RoundSnap
                 {
                     L = newL,
                     R = newR,
@@ -105,9 +101,18 @@ namespace NuminaBit.Services.Ciphers.DES
 
             // FP
             ulong preOut = ((ulong)R << 32) | L; // swap
-            run.FPIn = preOut;
             ulong C = Permute(preOut, Permutations.Final, 64);
-            run.FinalCipher = C;
+
+            // Prepare result
+            var run = new RunInfo
+            {
+                IPOut = ip,
+                KeySchedule = sched,
+                Rounds = rounds,
+                FinalCipher = C,
+                FPIn = preOut
+            };
+
             return run;
         }
 

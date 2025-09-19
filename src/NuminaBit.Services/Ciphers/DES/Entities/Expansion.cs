@@ -1,7 +1,7 @@
 ﻿namespace NuminaBit.Services.Ciphers.DES.Entities
 {
-    public sealed class Expansion
+    public sealed record Expansion
     {
-        public int[] E { get; set; } = [];
+        public int[] E { get; init; } = [];
     }
 }

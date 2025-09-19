@@ -1,14 +1,13 @@
-﻿using NuminaBit.Services.Ciphers.DES.Entities;
+﻿using NuminaBit.Web.App.Entities;
+using NuminaBit.Services.Ciphers.DES.Entities;
 using NuminaBit.Services.Ciphers.Shared.Entities;
 
 namespace NuminaBit.Web.App.Pages
 {
     public partial class LatAnalyzer
     {
-        private sealed record SBoxState(string Text, int Value);
-
         // S-box options.
-        private readonly static List<SBoxState> SBoxOptions = [
+        private readonly static List<SBoxItem> SBoxOptions = [
             new("S1",0), new("S2",1), new("S3",2), new("S4",3),
             new("S5",4), new("S6",5), new("S7",6), new("S8",7),
             new("Custom", 8)

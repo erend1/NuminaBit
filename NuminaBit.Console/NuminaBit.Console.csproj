@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="Services\DES\" />
-    <Folder Include="Services\Shared\" />
   </ItemGroup>
 
   <ItemGroup>

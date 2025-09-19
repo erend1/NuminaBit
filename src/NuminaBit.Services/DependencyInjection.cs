@@ -14,8 +14,9 @@ namespace NuminaBit.Services
         public static IServiceCollection AddNuminaBitServices(this IServiceCollection services)
         {
 
-            services.TryAddSingleton<IDES, DesCore>();
+            services.TryAddSingleton<IDES, Core>();
             services.TryAddSingleton<ILAT, LatCalculator>();
+            services.TryAddSingleton<IEquationBuilder, EquationBuilder>();
 
             return services;
         }
