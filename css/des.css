@@ -1,0 +1,60 @@
+﻿.row-line {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem
+}
+
+.row-label {
+    min-width: 4rem;
+    font-weight: 600
+}
+
+.row-bits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px
+}
+
+.bit {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    font-family: ui-monospace,Consolas,monospace;
+    font-size: 12px
+}
+
+.bit-sel {
+    outline: 2px solid #10b981
+}
+
+.round-panel {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0,1fr));
+    gap: .5rem
+}
+
+.col {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: .25rem
+}
+
+.col-label {
+    font-weight: 600;
+    margin-bottom: .25rem
+}
+
+.col-bits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px
+}
+
+.round-title {
+    font-weight: 700;
+    margin-bottom: .25rem
+}
