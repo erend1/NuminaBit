@@ -7,8 +7,4 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NuminaBit.Domain\NuminaBit.Domain.csproj" />
-  </ItemGroup>
-
 </Project>
