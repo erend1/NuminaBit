@@ -1,0 +1,71 @@
+﻿@page "/des"
+
+@using NuminaBit.Web.App.Components.DesVisualizer
+
+@inject TooltipService TooltipService
+
+<RadzenCard Style="margin:1rem;">
+  <ChildContent>
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-semibold">DES Görselleştirici</span>
+      <RadzenBadge Style="background:#1f2937;color:#fff" Text="Blazor WASM" />
+    </div>
+  </ChildContent>
+  <ChildContent>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="md:col-span-1 space-y-3">
+        <RadzenFieldset Text="Girdi ve Anahtar" AllowCollapse="true">
+          <div class="space-y-2">
+            <RadzenTextBox style="width:100%" Placeholder="16 hex" @bind-Value="PlainHex" MaxLength="16"/>
+            <div class="text-xs text-gray-500">Düz metin (64‑bit): 16 hex (örn: 0123456789ABCDEF)</div>
+            <RadzenTextBox style="width:100%" Placeholder="16 hex" @bind-Value="KeyHex" MaxLength="16" />
+            <div class="text-xs text-gray-500">Anahtar (64‑bit, parity dahil): 16 hex</div>
+            <div class="flex gap-2">
+              <RadzenButton Icon="autorenew" Text="Rastgele Girdi" Click="RandomPlain" />
+              <RadzenButton Icon="autorenew" Text="Rastgele Anahtar" Click="RandomKey" />
+            </div>
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Çalıştırma" AllowCollapse="true">
+          <div class="flex flex-wrap items-center gap-2">
+            <RadzenButton Icon="play_arrow" Text="Çalıştır" ButtonStyle="ButtonStyle.Primary" Click="RunAll" />
+            <RadzenButton Icon="skip_next" Text="Adım" Click="StepOnce" />
+            <RadzenButton Icon="restart_alt" Text="Sıfırla" Click="Reset" />
+            <RadzenCheckBox @bind-Value="ShowBinary" />
+            <label class="text-sm">İkilik göster</label>
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Durum" AllowCollapse="true">
+          <div class="text-sm">
+            <div>Adım: @StepIndex / 16</div>
+            <div>Şifreli Çıkış: <strong>@(FinalHex ?? "-")</strong></div>
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Tıklama/İzleme" AllowCollapse="true">
+          <div class="text-sm break-words">
+            <div>Seçili Bit: @(Selected?.ToString() ?? "(yok)")</div>
+          </div>
+        </RadzenFieldset>
+      </div>
+
+      <div class="md:col-span-2 space-y-3">
+        <RadzenTabs>
+          <Tabs>
+            <RadzenTabsItem Text="Genel Bakış">
+              <OverviewPanel Snapshots="Snapshots" ShowBinary="ShowBinary" OnBitClick="OnBitClick" Selected="Selected" />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Tur Görselleştirici">
+              <RoundPanel Snapshots="Snapshots" StepIndex="StepIndex" OnBitClick="OnBitClick" Selected="Selected" />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Anahtar Zamanlaması">
+              <KeySchedulePanel Sched="Snapshots?.KeySchedule" ShowBinary="ShowBinary" OnBitClick="OnBitClick" Selected="Selected" />
+            </RadzenTabsItem>
+          </Tabs>
+        </RadzenTabs>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenCard>
