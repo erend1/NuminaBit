@@ -1,12 +1,13 @@
-﻿using NuminaBit.Services.Ciphers.DES;
+﻿using NuminaBit.Web.App.Entities;
 using Microsoft.AspNetCore.Components;
+using NuminaBit.Services.Ciphers.DES.Entities;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace NuminaBit.Web.App.Components.DesVisualizer
 {
     public partial class RoundPanel : ComponentBase
     {
-        [Parameter] public DesRun? Snapshots { get; set; }
+        [Parameter] public RunInfo? Snapshots { get; set; }
         [Parameter] public int StepIndex { get; set; }
         [Parameter] public EventCallback<BitTag> OnBitClick { get; set; }
         [Parameter] public BitTag? Selected { get; set; }

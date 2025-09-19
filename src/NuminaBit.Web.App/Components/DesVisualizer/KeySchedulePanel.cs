@@ -1,5 +1,6 @@
-﻿using NuminaBit.Services.Ciphers.DES;
+﻿using NuminaBit.Web.App.Entities;
 using Microsoft.AspNetCore.Components;
+using NuminaBit.Services.Ciphers.DES.Entities;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace NuminaBit.Web.App.Components.DesVisualizer

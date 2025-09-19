@@ -1,17 +1,16 @@
 ﻿@inherits LayoutComponentBase
-
 <RadzenLayout>
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
             <RadzenLabel Text="Header" />
-            <RadzenAppearanceToggle />
         </RadzenStack>
     </RadzenHeader>
-    <RadzenSidebar Style="width: max-content">
-        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded? MenuItemDisplayStyle.IconAndText: MenuItemDisplayStyle.Icon)" ShowArrow="false">
-            <RadzenPanelMenuItem Text="Overview" Icon="home" />
-            <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" />
+    <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Overview" Icon="home" Path="/" Match="NavLinkMatch.All"/>
+            <RadzenPanelMenuItem Text="DES" Icon="password" Path="/des" />
+            <RadzenPanelMenuItem Text="LAT" Icon="tab" Path="/lat" />
             <RadzenPanelMenuItem Text="UI Fundamentals" Icon="auto_awesome">
                 <RadzenPanelMenuItem Text="Themes" Icon="color_lens" />
                 <RadzenPanelMenuItem Text="Colors" Icon="invert_colors" />
@@ -29,5 +28,5 @@
 </RadzenLayout>
 
 @code {
-    bool sidebarExpanded = true;
+    bool sidebar1Expanded = true;
 }

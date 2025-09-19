@@ -1,13 +1,14 @@
 ﻿using Microsoft.JSInterop;
-using NuminaBit.Services.Ciphers.DES;
+using NuminaBit.Web.App.Entities;
 using Microsoft.AspNetCore.Components;
+using NuminaBit.Services.Ciphers.DES.Entities;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace NuminaBit.Web.App.Components.DesVisualizer
 {
     public partial class OverviewPanel : ComponentBase
     {
-        [Parameter] public DesRun? Snapshots { get; set; }
+        [Parameter] public RunInfo? Snapshots { get; set; }
         [Parameter] public bool ShowBinary { get; set; }
         [Parameter] public EventCallback<BitTag> OnBitClick { get; set; }
         [Parameter] public BitTag? Selected { get; set; }

@@ -1,0 +1,125 @@
+﻿@page "/lat"
+
+@inject ILogger<LatAnalyzer> _log
+@inject NuminaBit.Services.Ciphers.DES.Interfaces.IDES _des
+@inject NuminaBit.Services.Ciphers.Shared.Interfaces.ILAT _lat
+
+<RadzenCard Style="margin:1rem;">
+  <ChildContent>
+    <div class="grid md:grid-cols-3 gap-4">
+      <!-- Left: Controls and editor -->
+      <div class="md:col-span-1 space-y-3">
+        <RadzenFieldset Text="S-Box Seçimi" AllowCollapse="false">
+          <div class="space-y-2">
+            <RadzenDropDown TValue="int" @bind-Value="SelectedSBoxIndex" Data="@SBoxOptions" TextProperty="Text" ValueProperty="Value" Style="width:100%" />
+            <div class="text-xs text-gray-500">Mevcut DES S-box'larından birini seçin veya 'Custom' ile manuel girin.</div>
+            <RadzenButton Text="Reset (Default)" Click="ResetToDefault" Style="margin-top:8px" />
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="S-Box (4x16 grid) - satır=0..3, sütun=0..15" AllowCollapse="false">
+          <div class="overflow-auto max-h-56">
+            <table class="sbox-grid">
+              @for (int r=0;r<4;r++)
+              {
+                <tr>
+                  @for (int c=0;c<16;c++)
+                  {
+                    var idx = r*16 + c;
+                    <td>
+                      <input class="sbox-cell" type="number" min="0" max="15" value="@SboxTable[idx]" @oninput="(e)=>OnSboxCellChange(idx,e.Value?.ToString())" />
+                    </td>
+                  }
+                </tr>
+              }
+            </table>
+          </div>
+          <div class="text-xs text-gray-500 mt-2">Her hücre 0..15 (4-bit çıktı). Alternatif olarak dışarıdan 64 elemanlı dizi kullanabilirsiniz.</div>
+          <div class="flex gap-2 mt-2">
+            <RadzenButton Text="Hesapla NS-32" Click="ComputeLAT" ButtonStyle="ButtonStyle.Primary" />
+            <RadzenButton Text="Load from DesHelpers" Click="LoadFromHelpers" />
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Seçenekler"  AllowCollapse="false">
+          <div class="flex flex-col gap-2">
+            <RadzenCheckBox @bind-Value="ShowNSMinus32" />
+            <label class="text-sm">Gösterimi NS - 32 olarak göster</label>
+                <div class="text-sm">Seçili S-box: @SelectedSBoxValue</div>
+            <div class="text-sm">(alpha: 0..63, beta: 0..15)</div>
+          </div>
+        </RadzenFieldset>
+      </div>
+
+      <!-- Right: LAT table and details -->
+      <div class="md:col-span-2 space-y-3">
+                <RadzenFieldset Text="NS Table (alpha rows 0..63, beta cols 0..15)"  AllowCollapse="false">
+          <div class="overflow-auto max-h-[520px]">
+            @if (NsTable is null)
+            {
+              <div class="p-4 text-sm text-gray-500">Henüz hesaplanmadı.</div>
+            }
+            else
+            {
+              <table class="lat-table">
+                <thead>
+                  <tr>
+                    <th>α \ β</th>
+                    @for (int b=0; b<16; b++) 
+                    { 
+                        <th>@b</th> 
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (int a=0; a<64; a++)
+                  {
+                    var alpha = a;
+                    <tr>
+                      <td class="alpha-col">@a</td>
+                      @for (int b=0; b<16; b++)
+                      {
+                        var beta = b;
+                        var v = NsTable[a,b];
+                        var display = ShowNSMinus32 ? (v - 32).ToString() : v.ToString();
+                        <td class="lat-cell" @onclick="(()=>OpenCellDetail(alpha, beta))">@display</td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Hücre Detayı" AllowCollapse="false">
+          @if (SelectedCell is null)
+          {
+            <div class="text-sm text-gray-500 p-4">Bir hücre seçin (herhangi bir NS hücresine tıklayın) — her biri 64 girdinin elle dökümünü gösterir.</div>
+          }
+          else
+          {
+            <div class="p-2">
+              <div class="text-sm mb-2">Seçim: α=@SelectedCell.Alpha, β=@SelectedCell.Beta — NS=@SelectedCell.Count (NS-32=@(SelectedCell.Count-32))</div>
+              <table class="cell-detail">
+                <thead><tr><th>z (0..63)</th><th>α·z</th><th>S(z) (dec)</th><th>β·S(z)</th><th>match?</th></tr></thead>
+                <tbody>
+                  @foreach(var row in SelectedCell.Rows)
+                  {
+                    <tr class="@(row.IsMatch ? "match" : "")">
+                      <td>@row.Z</td>
+                      <td>@row.AlphaDot</td>
+                      <td>@row.SOut (@To4Bits(row.SOut))</td>
+                      <td>@row.BetaDot</td>
+                      <td>@(row.IsMatch ? "1" : "0")</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </RadzenFieldset>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenCard>
