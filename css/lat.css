@@ -1,0 +1,46 @@
+﻿.sbox-grid {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    .sbox-grid td {
+        padding: 2px;
+    }
+
+.sbox-cell {
+    width: 56px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.lat-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+}
+
+    .lat-table th, .lat-table td {
+        border: 1px solid #e5e7eb;
+        padding: 4px;
+        text-align: center;
+    }
+
+.alpha-col {
+    background: #f9fafb;
+    font-weight: 600;
+    width: 40px;
+}
+
+.lat-cell {
+    cursor: pointer;
+}
+
+.cell-detail tr.match {
+    background: #e6ffed;
+}
+
+.cell-detail td, .cell-detail th {
+    padding: 4px;
+    border-bottom: 1px solid #eee;
+}
