@@ -1,0 +1,42 @@
+﻿@page "/attack-3-round"
+
+@inject ILogger<Attack3Round> Log
+@inject NuminaBit.Services.Ciphers.DES.Interfaces.IAttackRunner _attack
+
+<RadzenCard Style="margin:1rem;">
+  <ChildContent>
+    <div class="space-y-4">
+      <RadzenFieldset Text="Input Settings" Expandable="false">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <RadzenTextBox style="width:100%" Placeholder="16 hex" @bind-Value="KeyHex" Disabled="@UseHiddenKey" />
+            <div class="text-xs text-gray-500">Secret Key (64-bit, hex)</div>
+            <RadzenCheckBox @bind-Value="UseHiddenKey" />
+            <label class="text-sm">Use hidden system key</label>
+          </div>
+          <div>
+            <RadzenDropDown Data="@PairCounts" @bind-Value="PairCount" />
+            <div class="text-xs text-gray-500">Number of plaintext/ciphertext pairs</div>
+          </div>
+        </div>
+      </RadzenFieldset>
+
+      <RadzenButton Icon="play_arrow" Text="Run Attack" ButtonStyle="ButtonStyle.Primary" Click="RunAttack" />
+      <RadzenProgressBar Value="@(IsRunning ? 50 : 0)" Mode="ProgressBarMode.Indeterminate" Visible="@IsRunning" />
+
+      @if (ResultMessage != null)
+      {
+        <RadzenFieldset Text="Result" Expandable="false">
+          <div class="text-sm">
+            <div><b>Equation:</b> P_H[7,18,24,29] ⊕ C_H[7,18,24,29] ⊕ P_L[15] ⊕ C_L[15] = K1[22] ⊕ K3[22]</div>
+            <div><b>Attack Guess:</b> @ResultMessage</div>
+          </div>
+        </RadzenFieldset>
+      }
+
+      <RadzenFieldset Text="Algorithm 2 (coming soon)" Expandable="false">
+        <div class="text-sm text-gray-500">This section is reserved for Algorithm 2 implementation.</div>
+      </RadzenFieldset>
+    </div>
+  </ChildContent>
+</RadzenCard>

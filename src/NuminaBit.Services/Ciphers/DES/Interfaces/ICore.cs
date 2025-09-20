@@ -2,13 +2,15 @@
 
 namespace NuminaBit.Services.Ciphers.DES.Interfaces
 {
-    public interface IDES
+    public interface ICore
     {
         public Permutations Permutations { get; }
         public Expansion Expansion { get; }
         public Substitutions Substitutions { get; }
 
         public ulong EncryptFast(ulong plain, KeySchedule ks);
+        public ulong EncryptCustom(ulong plain, KeySchedule ks,
+            int rounds = 3, bool withIP = false, bool withFP = false);
         public RunInfo EncryptWithSnapshots(ulong plain, ulong key64);
         public KeySchedule BuildKeySchedule(ulong key64);
 

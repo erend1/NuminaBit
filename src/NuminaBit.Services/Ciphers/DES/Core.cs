@@ -4,7 +4,7 @@ using NuminaBit.Services.Ciphers.DES.Interfaces;
 
 namespace NuminaBit.Services.Ciphers.DES
 {
-    public sealed class Core: IDES
+    public sealed class Core: ICore
     {
         private readonly static Permutations _permutations = new()
         {
@@ -61,6 +61,32 @@ namespace NuminaBit.Services.Ciphers.DES
 
             ulong preOut = ((ulong)R << 32) | L;
             return Permute(preOut, Permutations.Final, 64);
+        }
+
+        public ulong EncryptCustom(ulong plain, KeySchedule ks, 
+            int rounds = 3, bool withIP = false, bool withFP = false)
+        {
+            // IP
+            ulong ip = withIP ? Permute(plain, Permutations.Initial, 64) : plain;
+
+            uint L = (uint)(ip >> 32);
+            uint R = (uint)(ip & 0xFFFFFFFF);
+
+            for (int r = 0; r < rounds; r++)
+            {
+                ulong sub = ks.SubKeys[r];
+                ulong ER = Permute(R, Expansion.Mapping, 32, 48);
+                ulong EX = ER ^ sub;
+                uint sOut = SBoxSub(EX);
+                uint pOut = (uint)Permute(sOut, Permutations.P, 32);
+                uint newL = R;
+                uint newR = L ^ pOut;
+                L = newL;
+                R = newR;
+            }
+
+            ulong preOut = ((ulong)R << 32) | L;
+            return withFP ? Permute(preOut, Permutations.Final, 64) : preOut;
         }
 
         public RunInfo EncryptWithSnapshots(ulong plain, ulong key64)

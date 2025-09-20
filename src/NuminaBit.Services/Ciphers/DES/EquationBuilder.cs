@@ -3,12 +3,12 @@ using NuminaBit.Services.Ciphers.DES.Interfaces;
 
 namespace NuminaBit.Services.Ciphers.DES
 {
-    public class EquationBuilder(IDES des): IEquationBuilder
+    public class EquationBuilder(ICore des): IEquationBuilder
     {
         //private readonly static string _xorString = " XOR ";
         private readonly static string _xorString = " ⊕ ";
         private readonly static string splitString = ", ";
-        private readonly IDES _des = des;
+        private readonly ICore _des = des;
 
         // get the 6 E positions for S-box index (7..0) from right to left
         private static int[] GetSPositionsForSbox(int sboxIndex)
