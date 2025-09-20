@@ -16,5 +16,15 @@ namespace NuminaBit.Console.Services.Shared
             System.Console.WriteLine($"Mapping Result: {mapping}");
             System.Console.WriteLine(_builder.ToHumanEquation(mapping));
         }
+
+        public void Example2()
+        {
+            int sboxIndex = 1; // S5
+            int alpha = 27; // example alpha
+            int beta = 4; // example beta
+            var mapping = _builder.Build(sboxIndex, alpha, beta);
+            System.Console.WriteLine($"Mapping Result: {mapping}");
+            System.Console.WriteLine(_builder.ToHumanEquation(mapping));
+        }
     }
 }

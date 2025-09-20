@@ -6,5 +6,6 @@ namespace NuminaBit.Services.Ciphers.DES.Interfaces
     {
         public MappingResult Build(int sboxIndex, int alpha, int beta);
         public string ToHumanEquation(MappingResult m);
+        public string Latexify(MappingResult m);
     }
 }

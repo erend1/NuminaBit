@@ -11,8 +11,8 @@
           <div class="space-y-2">
             <RadzenDropDown @bind-Value="SelectedSBoxIndex" Data="@SBoxOptions" TextProperty="Text" ValueProperty="Value" Style="width:100%" />
             <div class="flex gap-2">
-              <RadzenTextBox Placeholder="α (binary 6 bit, e.g. 100100)" @bind-Value="alphaBin" Style="width:60%"/>
-              <RadzenTextBox Placeholder="β (binary 4 bit, e.g. 0001)" @bind-Value="betaBin" Style="width:30%"/>
+              <RadzenTextBox Placeholder="α (binary 6 bit, e.g. 100100)" @bind-Value="alphaBin" Style="width:60%" MaxLength="6"/>
+              <RadzenTextBox Placeholder="β (binary 4 bit, e.g. 0001)" @bind-Value="betaBin" Style="width:30%" MaxLength="4"/>
             </div>
             <div class="flex gap-2 mt-2">
               <RadzenButton Text="Build" Click="Build" ButtonStyle="ButtonStyle.Primary" />
@@ -30,10 +30,12 @@
           else
           {
             <div class="text-sm space-y-1 p-2">
-              <div><strong>S-box:</strong> S@(mapping.SBoxIndex+1)</div>
-              <div><strong>Alpha bits set => R bits:</strong> @String.Join(", ", alphaRList)</div>
-              <div><strong>Beta bits set => F outputs:</strong> @String.Join(", ", betaFList)</div>
-              <div><strong>Subkey(48) positions:</strong> @String.Join(", ", mapping.SubkeyPositions)</div>
+              <div><strong>S-box:</strong> S@(mapping.SBoxIndex)</div>
+              <div><strong>S-box input position bits:</strong> @String.Join(", ", mapping.SBoxInputPositions)</div>
+              <div><strong>S-box output position bits:</strong> @String.Join(", ", mapping.SBoxOutputPositions)</div>
+              <div><strong>E(X) position bits:</strong> @String.Join(", ", mapping.ExpansionPositions)</div>
+              <div><strong>F(X, K) position bits:</strong> @String.Join(", ", mapping.FunctionPositions)</div>
+              <div><strong>K position bits:</strong> @String.Join(", ", mapping.SubkeyPositions)</div>
             </div>
           }
         </RadzenFieldset>
@@ -58,7 +60,7 @@
             @if (mapping is not null)
             {
               <div class="text-xs text-gray-600 mb-2">Copy-paste this into your slides (LaTeX-ish):</div>
-              <code>$$ @latexEquation $$</code>
+              <code>@latexEquation</code>
             }
             else
             {

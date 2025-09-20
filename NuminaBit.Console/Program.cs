@@ -16,6 +16,6 @@ using var scope = provider.CreateScope();
 
 var myService = scope.ServiceProvider.GetRequiredService<IEquationBuilderExamples>();
 
-myService.Example1();
+myService.Example2();
 
 Console.ReadLine();

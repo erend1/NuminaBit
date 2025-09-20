@@ -5,8 +5,9 @@ namespace NuminaBit.Services.Ciphers.DES
 {
     public class EquationBuilder(IDES des): IEquationBuilder
     {
-        private readonly static string _xorString2 = " ⊕ ";
-        private readonly static string _xorString = " XOR ";
+        //private readonly static string _xorString = " XOR ";
+        private readonly static string _xorString = " ⊕ ";
+        private readonly static string splitString = ", ";
         private readonly IDES _des = des;
 
         // get the 6 E positions for S-box index (7..0) from right to left
@@ -86,7 +87,13 @@ namespace NuminaBit.Services.Ciphers.DES
             return fPositions;
         }
 
-        // Build mapping result
+        /// <summary>
+        /// S-box positions are 1..8, so it starts from 1.
+        /// </summary>
+        /// <param name="sboxIndex"></param>
+        /// <param name="alpha"></param>
+        /// <param name="beta"></param>
+        /// <returns></returns>
         public MappingResult Build(int sboxIndex, int alpha, int beta)
         {
             var sPos = GetSPositionsForSbox(sboxIndex); // 1..48 pos
@@ -112,7 +119,21 @@ namespace NuminaBit.Services.Ciphers.DES
             // subkey positions
             var kSide = string.Join(_xorString, m.SubkeyPositions.Select(i => $"K[{i}]"));
 
-            return $"{alphaSide} {_xorString} {betaSide} = {kSide}";
+            return $"{alphaSide}{_xorString}{betaSide} = {kSide}";
+        }
+
+        public string Latexify(MappingResult m)
+        {
+            // subkey positions
+            var alphaSide = $"X_{{{"i"}}}[{string.Join(splitString, m.ExpansionPositions).TrimEnd().TrimEnd(splitString[0])}]";
+
+            // subkey positions
+            var betaSide = $"F(X_{{{"i"}}}, K_{{{"i"}}})[{string.Join(splitString, m.FunctionPositions).TrimEnd().TrimEnd(splitString[0])}]";
+
+            // subkey positions
+            var kSide = $"K_{{{"i"}}}[{string.Join(splitString, m.SubkeyPositions).TrimEnd().TrimEnd(splitString[0])}]";
+
+            return $" \\[ {alphaSide} {_xorString} {betaSide} = {kSide} \\]";
         }
     }
 }

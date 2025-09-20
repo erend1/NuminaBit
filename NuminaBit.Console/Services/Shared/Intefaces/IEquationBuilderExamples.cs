@@ -3,5 +3,6 @@
     public interface IEquationBuilderExamples
     {
         public void Example1();
+        public void Example2();
     }
 }
