@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuminaBit.Web.App", "src\Nu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuminaBit.Services", "src\NuminaBit.Services\NuminaBit.Services.csproj", "{F6665F74-734C-45E8-A2F2-DC527E7642CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuminaBit.Console", "NuminaBit.Console\NuminaBit.Console.csproj", "{07EFBE18-4F67-4EDB-BEE4-EB698A802C2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuminaBit.Console", "src\NuminaBit.Console\NuminaBit.Console.csproj", "{07EFBE18-4F67-4EDB-BEE4-EB698A802C2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
