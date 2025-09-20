@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "NuminaBit.Web.App",
   "resources": {
-    "hash": "sha256-G0XKB+y56/lOdGbrta/YTcRQxGBZ8ccirmlcSwfKp0c=",
+    "hash": "sha256-KntUMWZO7IkQhu3yYnyi0lJ9KDtQGftZkDnsjGEHB1k=",
     "jsModuleNative": {
       "dotnet.native.8.0.20.elargmqivm.js": "sha256-D0bzod5lwwSzPR43JC8TTCcZKw+3jIHOk8CZFCRj5is="
     },
@@ -33,8 +33,8 @@
       "Microsoft.Extensions.Primitives.wasm": "sha256-Ms2HR5Gpug/0uRAzdk4SUNT76Ml3CjFv9Jo+dUIMGac=",
       "Microsoft.JSInterop.wasm": "sha256-/l3hfst6DSAs13T8CJ0x2lZFrPyMfYqg3y00eCWbSdQ=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-kBzoG2GaeUmEP4+2CJc3HCkifeLVhLGmjKA2CfMJEJo=",
-      "NuminaBit.Services.wasm": "sha256-h+IGE2/YQ3WIfX2MuGJuN/Z5XG6bjf94mCleqFP8jbc=",
-      "NuminaBit.Web.App.wasm": "sha256-rmED6sWJktflopnAVSvyPb6OFLNNjTsRQ70Gi68FAbw=",
+      "NuminaBit.Services.wasm": "sha256-zkKYU5UwvlY5rFeDf4dARG8fi+bRUrpuhUyPzRSfytI=",
+      "NuminaBit.Web.App.wasm": "sha256-gUFwQ7WWnQ8Wf8f8dRcPMZ+M2X8MZOXrhFXIVSneXaw=",
       "Radzen.Blazor.wasm": "sha256-Uy38cYb4ZqpTOdvHgVDRMzZzlZVu277fH6XKKYN77TU=",
       "System.Collections.Concurrent.wasm": "sha256-H08C5NscwRCns5BmtnAlzOIklkFoM7Sl9UkywLg2eN8=",
       "System.Collections.NonGeneric.wasm": "sha256-ZUnnO1g68pPFbgoiQ5b34C9CiuAYtKcKicy0ip3ajcs=",
@@ -58,7 +58,7 @@
       "System.Net.Http.wasm": "sha256-0qRpY0SCg+IKunuiIUoB6AhtsOT6jraPzw5myNB9dSw=",
       "System.Net.Primitives.wasm": "sha256-qDr0UF4R3ZPhnaDcPYSA6fuj0j1u9WiMYFk9vQiMZbs=",
       "System.ObjectModel.wasm": "sha256-xtxR8YnkSL7hMhoBK/pqruLZj+KPgnzc0ReqDMqdCNE=",
-      "System.Private.CoreLib.wasm": "sha256-dRU6IYLZ3VwFkGX4lQ8nzNxkbQLnLvStW56iVoV4d2E=",
+      "System.Private.CoreLib.wasm": "sha256-w6jM0hPZ9IL371BOOk6xGjOG0CBfdF0Q/pkSVPgHj1M=",
       "System.Private.Uri.wasm": "sha256-lOzUAEmu9QaXNf0enRiVuniNO1KdcH6SLkJ0bN66/bo=",
       "System.Private.Xml.Linq.wasm": "sha256-3r/LTABPk82x+VdiNLD6hyWi52ilS9kYyQUoHph2u4I=",
       "System.Private.Xml.wasm": "sha256-tLLnaxuAbhFLRsTwd11vNQSZCO7if5DoDUbpzCyT6ns=",
@@ -68,6 +68,7 @@
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-sLpnMid4nYBgN7zTk2ARgUsRmeB7bZZteEsV1YVZwAk=",
       "System.Runtime.InteropServices.wasm": "sha256-Dct6EFqjdPQI/jBK26JqLbIy24C4KkMdj3qCSWMEWlQ=",
       "System.Runtime.wasm": "sha256-2VAouc4/gZG6OlIefeqz/Ws8RGmI3SypLQD9PLqZmBg=",
+      "System.Security.Cryptography.wasm": "sha256-jw35j0oXByoytmC54EXx61uxt+A2JqhbTm4jP5lHN+M=",
       "System.Text.Encodings.Web.wasm": "sha256-1WWIO3kw6KTZX1hm5cuGLXcfK505pwON+3hJRfG87wc=",
       "System.Text.Json.wasm": "sha256-1/0uX25oDuQGlyHa7BvjygVyu68iKVvZjBhBR9wHe4I=",
       "System.Text.RegularExpressions.wasm": "sha256-C8G2GGU49YRhR5jfEJ5YTEqyJmPxMFsljMOPvUwlp1E=",
