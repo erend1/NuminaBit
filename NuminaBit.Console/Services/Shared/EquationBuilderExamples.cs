@@ -9,9 +9,9 @@ namespace NuminaBit.Console.Services.Shared
 
         public void Example1()
         {
-            int sboxIndex = 4; // S5
-            int alpha = 0b100100; // example alpha
-            int beta = 0b0001; // example beta
+            int sboxIndex = 5; // S5
+            int alpha = 16; // example alpha
+            int beta = 15; // example beta
             var mapping = _builder.Build(sboxIndex, alpha, beta);
             System.Console.WriteLine($"Mapping Result: {mapping}");
             System.Console.WriteLine(_builder.ToHumanEquation(mapping));

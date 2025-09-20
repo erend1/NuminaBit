@@ -10,15 +10,19 @@ namespace NuminaBit.Services.Ciphers.DES
         {
             Initial = Tables.IP,
             Final = Tables.FP,
+
             PC1 = Tables.PC1,
             PC2 = Tables.PC2,
-            P = Tables.P
+
+            P = Tables.P,
+            InvP = Tables.P_INV
         };
         public Permutations Permutations => _permutations;
 
         private readonly static Expansion _expansion = new()
         {
-            E = Tables.E
+            Mapping = Tables.E,
+            InverseMapping = Tables.E_INV
         };
         public Expansion Expansion => _expansion;
 
@@ -45,7 +49,7 @@ namespace NuminaBit.Services.Ciphers.DES
             for (int r = 0; r < 16; r++)
             {
                 ulong sub = ks.SubKeys[r];
-                ulong ER = Permute(R, Expansion.E, 32, 48);
+                ulong ER = Permute(R, Expansion.Mapping, 32, 48);
                 ulong EX = ER ^ sub;
                 uint sOut = SBoxSub(EX);
                 uint pOut = (uint)Permute(sOut, Permutations.P, 32);
@@ -77,7 +81,7 @@ namespace NuminaBit.Services.Ciphers.DES
             for (int r = 1; r <= 16; r++)
             {
                 var sub = sched.SubKeys[r - 1];
-                ulong ER = Permute(R, Expansion.E, 32, 48);
+                ulong ER = Permute(R, Expansion.Mapping, 32, 48);
                 ulong EX = ER ^ sub; // 48-bit
                 uint sOut = SBoxSub(EX);
                 uint pOut = (uint)Permute(sOut, Permutations.P, 32);

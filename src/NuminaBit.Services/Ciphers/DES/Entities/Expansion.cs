@@ -2,6 +2,7 @@
 {
     public sealed record Expansion
     {
-        public int[] E { get; init; } = [];
+        public int[] Mapping { get; init; } = [];
+        public Dictionary<int, int[]> InverseMapping { get; init; } = [];
     }
 }

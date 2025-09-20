@@ -4,8 +4,11 @@
     {
         public int[] Initial { get; init; } = [];
         public int[] Final { get; init; } = [];
+
         public int[] PC1 { get; init; } = [];
         public int[] PC2 { get; init; } = [];
+
         public int[] P { get; init; } = [];
+        public int[] InvP { get; init; } = [];
     }
 }
