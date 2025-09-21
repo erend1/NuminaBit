@@ -10,7 +10,7 @@ namespace NuminaBit.Services.Ciphers.DES
         private readonly static string splitString = ", ";
         private readonly ICore _des = des;
 
-        // get the 6 E positions for S-box index (7..0) from right to left
+        // get the 6 E positions for S-box index (1..8) from left to right
         private static int[] GetSPositionsForSbox(int sboxIndex)
         {
             int start = 48 - sboxIndex * 6; // 0-based start in array indexing (C# arrays 0..47)
@@ -55,11 +55,14 @@ namespace NuminaBit.Services.Ciphers.DES
         private static List<int> GetKPositionsFromSbox(int[] sPositions, int alpha)
         {
             var kPositions = new List<int>();
+            var reverseSPositions = new int[sPositions.Length];
+            Array.Copy(sPositions, reverseSPositions, sPositions.Length);
+            Array.Reverse(reverseSPositions);
             for (int i = 0; i < sPositions.Length; i++)
             {
                 if (((alpha >> (5 - i)) & 1) == 1)
                 {
-                    kPositions.Add(sPositions[sPositions.Length - i - 1]);
+                    kPositions.Add(reverseSPositions[i]);
                 }
             }
             return kPositions;
@@ -68,7 +71,7 @@ namespace NuminaBit.Services.Ciphers.DES
         // Map L position -> F bit index using DesHelpers.E (E[pos-1] = rIndex)
         private List<int> GetFPositionsFromSbox(int[] lPositions, int beta)
         {
-            var P = _des.Permutations.P; // E array of length 48 with values 1..32
+            var P = _des.Permutations.InvP; // E array of length 48 with values 1..32
             var outp = new int[lPositions.Length];
             for (int i = 0; i < lPositions.Length; i++)
             {

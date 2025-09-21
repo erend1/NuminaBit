@@ -15,8 +15,9 @@ var provider = services.BuildServiceProvider();
 
 using var scope = provider.CreateScope();
 
-var myService = scope.ServiceProvider.GetRequiredService<IAttackRunner2Examples>();
+var myService = scope.ServiceProvider.GetRequiredService<IEquationBuilderExamples>();
 
 myService.Example1();
+myService.Example2();
 
 Console.ReadLine();

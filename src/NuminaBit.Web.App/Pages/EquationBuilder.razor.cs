@@ -15,7 +15,7 @@ namespace NuminaBit.Web.App.Pages
         private int SelectedSBoxIndex { get; set; } = 4;
 
         private string alphaBin = "100000";
-        private string betaBin = "11111";
+        private string betaBin = "1111";
 
         private MappingResult? mapping;
 

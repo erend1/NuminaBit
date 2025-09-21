@@ -7,9 +7,18 @@ namespace NuminaBit.Console.Services.Shared
     {
         private readonly IAttackRunner2 _attack = attack;
 
-        public void Example1()
+        public async void Example1()
         {
-            _attack.RunAlgorithm1SingleAsync(0x133457799BBCDFF1UL, 1000).Wait();
+            var successes = 0;
+            for (int i = 0; i < 250; i++)
+            {
+                var a = await _attack.RunAlgorithm1SingleAsync(0x133456798BBCDFF1UL, 100);
+                System.Console.WriteLine(a.Success);
+                if(a.Success)
+                    successes++;
+            }
+            System.Console.WriteLine($"Done Example1 : {successes}");
+            System.Console.ReadLine();
         }
     }
 }
