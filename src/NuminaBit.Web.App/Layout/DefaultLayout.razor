@@ -3,7 +3,6 @@
 
 @inherits LayoutComponentBase
 
-@inject NavigationManager _nav
 @inject IBasePathService _pathService
 
 <RadzenLayout>
@@ -47,8 +46,9 @@
 
     protected override void OnInitialized()
     {
-        _pathService.Init(_nav.BaseUri.Contains("github.io") ? HostType.GitHub : HostType.Default);
+        var isInitialized = _pathService.Initialize();
 
+        Console.WriteLine($"BasePathService isInitialized: {isInitialized}");
         Console.WriteLine($"BasePath: {_pathService.BasePath}");
 
         _desPath = _pathService.GetFullPath("des");

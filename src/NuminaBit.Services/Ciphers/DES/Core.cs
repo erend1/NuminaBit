@@ -8,14 +8,14 @@ namespace NuminaBit.Services.Ciphers.DES
     {
         private readonly static Permutations _permutations = new()
         {
-            Initial = Tables.IP,
-            Final = Tables.FP,
+            Initial = Tables.FP,
+            Final = Tables.IP,
 
             PC1 = Tables.PC1,
             PC2 = Tables.PC2,
 
-            P = Tables.P,
-            InvP = Tables.P_INV
+            P = Tables.P_INV,
+            InvP = Tables.P
         };
         public Permutations Permutations => _permutations;
 
@@ -69,24 +69,54 @@ namespace NuminaBit.Services.Ciphers.DES
             // IP
             ulong ip = withIP ? Permute(plain, Permutations.Initial, 64) : plain;
 
+            //var aa = ToBinaryString(ip, 64);
+
             uint L = (uint)(ip >> 32);
             uint R = (uint)(ip & 0xFFFFFFFF);
+            //var a = ToBinaryString(L, 32);
+            //var b = ToBinaryString(R, 32);
 
             for (int r = 0; r < rounds; r++)
             {
                 ulong sub = ks.SubKeys[r];
-                ulong ER = Permute(R, Expansion.Mapping, 32, 48);
+                //var a = ToBinaryString(sub, 48);
+                ulong ER = Permute2(R, Expansion.Mapping, 32, 48);
+                //var b = ToBinaryString(ER, 48);
                 ulong EX = ER ^ sub;
+                //var c = ToBinaryString(EX, 48);
                 uint sOut = SBoxSub(EX);
-                uint pOut = (uint)Permute(sOut, Permutations.P, 32);
+                //var d = ToBinaryString(sOut, 32);
+                uint pOut = (uint)Permute2(sOut, Permutations.P, 32);
+                //var e = ToBinaryString(pOut, 32);
                 uint newL = R;
                 uint newR = L ^ pOut;
                 L = newL;
                 R = newR;
             }
 
-            ulong preOut = ((ulong)R << 32) | L;
+            //var c = ToBinaryString(L, 32);
+            //var d = ToBinaryString(R, 32);
+
+            //ulong preOut = ((ulong)R << 32) | L;
+
+            ulong preOut = ((ulong)L << 32) | R;
+
+
+            //var e = ToBinaryString(preOut, 64);
+
             return withFP ? Permute(preOut, Permutations.Final, 64) : preOut;
+        }
+
+        private static string ToBinaryString(ulong v, int width)
+        {
+            var sb = new System.Text.StringBuilder(width);
+            for (int i = 0; i < width; i++)
+            {
+                int bit = (int)((v >> (width - 1 - i)) & 1UL);
+                sb.Append(bit == 1 ? '1' : '0');
+                if ((i + 1) % 8 == 0 && i < width - 1) sb.Append(' ');
+            }
+            return sb.ToString();
         }
 
         public RunInfo EncryptWithSnapshots(ulong plain, ulong key64)
@@ -148,10 +178,14 @@ namespace NuminaBit.Services.Ciphers.DES
 
         public KeySchedule BuildKeySchedule(ulong key64)
         {
+            //var a = ToBinaryString(key64, 64);
             // Parity dahil 64-bit anahtar -> PC1 ile 56-bit (C,D)
             ulong pc1 = Permute(key64, Permutations.PC1, 64); // 56-bit packed MSB-first
             uint C = (uint)((pc1 >> 28) & 0x0FFFFFFF);
             uint D = (uint)(pc1 & 0x0FFFFFFF);
+
+            //var b = ToBinaryString(C, 28);
+            //var c = ToBinaryString(D, 28);
 
             var ks = new KeySchedule
             {
@@ -166,6 +200,7 @@ namespace NuminaBit.Services.Ciphers.DES
                 D = LeftShift28(D, s);
                 ulong cd = ((ulong)C << 28) | D; // 56-bit
                 ulong sub = Permute(cd, Permutations.PC2, 56, 48);
+                //var e = ToBinaryString(sub, 48);
                 ks.SubKeys[r] = sub;
             }
             return ks;
@@ -184,8 +219,36 @@ namespace NuminaBit.Services.Ciphers.DES
             return res;
         }
 
+        public ulong Permute2(ulong val, int[] table, int inWidth, int outWidth = -1)
+        {
+            if (outWidth < 0)
+                outWidth = table.Length;
+
+            //var a = ToBinaryString(val, table.Length);
+
+            ulong res = 0;
+            for (int i = 0; i < table.Length; i++)
+            {
+                // 1. Tablo değerleri 1'den başladığı için 1 çıkar.
+                // 2. Bitleri sağdan sola (0-indexed) al.
+                int src_pos = table[i] - 1;
+
+                //var b = ToBinaryString((ulong)src_pos, 5);
+
+                // Girdi bitini al
+                ulong bit = (val >> src_pos) & 1UL;
+
+                // Alınan biti sağdan sola doğru, döngü sırasına göre yerleştir
+                res |= bit << i;
+
+                //var c = ToBinaryString(res, 32);
+            }
+            //var d = ToBinaryString(res, 32);
+            return res;
+        }
+
         public ulong Permute(uint val, int[] table, int inWidth, int outWidth = -1)
-            => Permute((ulong)val, table, inWidth, outWidth);
+            => Permute2((ulong)val, table, inWidth, outWidth);
 
         private static uint LeftShift28(uint v, int s)
         {
@@ -196,15 +259,30 @@ namespace NuminaBit.Services.Ciphers.DES
         private uint SBoxSub(ulong x48)
         {
             uint out32 = 0;
+            //var a = ToBinaryString(x48, 48);
             for (int box = 0; box < 8; box++)
             {
                 int shift = (7 - box) * 6;
                 int six = (int)((x48 >> shift) & 0x3F);
-                int row = ((six & 0x20) >> 4) | (six & 0x01); // b1b6
-                int col = (six >> 1) & 0x0F;                 // b2..b5
+                //var b = ToBinaryString((ulong)six, 6);
+
+                //int row = ((six & 0x20) >> 4) | (six & 0x01); // b1b6
+                //int col = (six >> 1) & 0x0F;                 // b2..b5
+
+                int row = six / 16;
+                int col = six % 16;
+
                 int s = Substitutions[box][row, col];
-                out32 |= (uint)(s & 0xF) << ((7 - box) * 4);
+                //var c = ToBinaryString((ulong)s, 4);
+
+                //out32 |= (uint)(s & 0xF) << ((7 - box) * 4);
+                // 4-bit'lik çıktıyı doğru yere yerleştir
+                // S1 çıktısı (box=0) en sola (28 bit kaydırarak) yerleşir.
+                int shift_out = (7 - box) * 4;
+                out32 |= (uint)(s & 0xF) << shift_out;
             }
+            //var d = ToBinaryString((ulong)out32, 32);
+
             return out32;
         }
 

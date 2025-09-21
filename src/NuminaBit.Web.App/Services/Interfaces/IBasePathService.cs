@@ -3,7 +3,7 @@
     public interface IBasePathService
     {
         public string BasePath { get; }
-        public void Init(HostType basePath);
+        public bool Initialize();
         public string GetFullPath(string relativePath);
     }
 }

@@ -29,16 +29,28 @@ namespace NuminaBit.Services.Ciphers.DES
                 for (int i = 0; i < pairs; i++)
                 {
                     ulong plain = Random64();
+                    //var a = ToBinaryString(plain, 64);
+
                     // 3-round, no IP/FP
                     ulong cipher = _des.EncryptCustom(plain, ks, rounds: 3, withIP: false, withFP: false);
+                    //var b = ToBinaryString(cipher, 64);
 
                     uint PH = (uint)(plain >> 32);
+                    //var c = ToBinaryString(PH, 32);
                     uint PL = (uint)(plain & 0xFFFFFFFF);
-                    uint CH = (uint)(cipher >> 32);
-                    uint CL = (uint)(cipher & 0xFFFFFFFF);
+                    //var d = ToBinaryString(PL, 32);
 
-                    int lhs = ExtractBits(PH, new[] { 7, 18, 24, 29 })
-                            ^ ExtractBits(CH, new[] { 7, 18, 24, 29 })
+                    uint CH = (uint)(cipher >> 32);
+                    //var e = ToBinaryString(CH, 32);
+
+                    uint CL = (uint)(cipher & 0xFFFFFFFF);
+                    //var f = ToBinaryString(CL, 32);
+
+                    //var g = GetBit(PL, 15);
+                    //var h = GetBit(CL, 15);
+
+                    int lhs = ExtractBits(PH, bitPositions)
+                            ^ ExtractBits(CH, bitPositions)
                             ^ GetBit(PL, 15)
                             ^ GetBit(CL, 15);
 
@@ -84,8 +96,8 @@ namespace NuminaBit.Services.Ciphers.DES
             // ks.SubKeys elements are 48-bit stored in ulong
             ulong kA = ks.SubKeys[roundAIndexZeroBased];
             ulong kB = ks.SubKeys[roundBIndexZeroBased];
-            int bitA = (int)((kA >> (48 - pos1based)) & 1UL);
-            int bitB = (int)((kB >> (48 - pos1based)) & 1UL);
+            int bitA = (int)((kA >> pos1based) & 1UL);
+            int bitB = (int)((kB >> pos1based) & 1UL);
             return (bitA ^ bitB);
         }
 
@@ -104,10 +116,28 @@ namespace NuminaBit.Services.Ciphers.DES
             return x;
         }
 
-        private static int GetBit(uint val, int pos)
+        private static int GetBit2(uint val, int pos)
         {
             // pos: 1..32 MSB-first
             return (int)((val >> (32 - pos)) & 1u);
+        }
+
+        private static int GetBit(uint val, int pos)
+        {
+            // pos: 0..31 LSB-first
+            return (int)((val >> pos) & 1UL);
+        }
+
+        private static string ToBinaryString(ulong v, int width)
+        {
+            var sb = new System.Text.StringBuilder(width);
+            for (int i = 0; i < width; i++)
+            {
+                int bit = (int)((v >> (width - 1 - i)) & 1UL);
+                sb.Append(bit == 1 ? '1' : '0');
+                if ((i + 1) % 8 == 0 && i < width - 1) sb.Append(' ');
+            }
+            return sb.ToString();
         }
     }
 }

@@ -15,9 +15,6 @@ builder.Services.AddNuminaBitServices();
 
 builder.Services.TryAddSingleton<IBasePathService, BasePathService>();
 
-var baseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-var isGitHubPages = baseAddress.Host.Contains("github.io");
-
 builder.RootComponents.Add<App>("#app");
 
 builder.RootComponents.Add<HeadOutlet>("head::after");

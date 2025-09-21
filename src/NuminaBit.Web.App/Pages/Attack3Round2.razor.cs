@@ -18,15 +18,13 @@ namespace NuminaBit.Web.App.Pages
         private readonly int[] TrialsOptions = [5, 10, 20, 50, 100];
 
         // results
-        private List<TrialOutcome> Outcomes { get; set; } = new();
-        private List<KeyValuePair<int, double>> CumulativeSuccessPercent { get; set; } = new();
+        private List<TrialOutcome> Outcomes { get; set; } = [];
+        private List<KeyValuePair<int, double>> CumulativeSuccessPercent { get; set; } = [];
 
         // derived key view
         private string DisplayKeyHex => UseHiddenKey ? "HIDDEN" : KeyHex.ToUpperInvariant();
-        private string KeyBinaryFull => GetKeyBinaryFull();
-        private string KeyBinaryShort => KeyBinaryFull?.Substring(0, Math.Min(64, KeyBinaryFull.Length)) ?? "";
-        private string KeyBinaryTooltip => KeyBinaryFull + "\n\nUTF8 (attempt): " + KeyToUtf8Preview();
 
+        private string KBinary = "";
         private string K1Binary = "";
         private string K3Binary = "";
         private int K1Bit22 = 0;
@@ -39,28 +37,31 @@ namespace NuminaBit.Web.App.Pages
             PrepareKeyView();
         }
 
-        void PrepareKeyView()
+        private void PrepareKeyView()
         {
             try
             {
                 ulong key64 = UseHiddenKey ? _attack.HiddenKey : HexUtil.Parse64(KeyHex);
-                var ks = new Core().BuildKeySchedule(key64);
-                // K1 is ks.SubKeys[0], K3 is ks.SubKeys[2]
+                var ks = _des.BuildKeySchedule(key64);
+                // K1 is ks.SubKeys[0]
                 var k1 = ks.SubKeys[0];
+                // K3 is ks.SubKeys[2]
                 var k3 = ks.SubKeys[2];
+                KBinary = ToBinaryString(key64, 64);
                 K1Binary = ToBinaryString(k1, 48);
                 K3Binary = ToBinaryString(k3, 48);
-                K1Bit22 = (int)((k1 >> (48 - 22)) & 1UL);
-                K3Bit22 = (int)((k3 >> (48 - 22)) & 1UL);
+                // Get the 22nd bit from the right (0-indexed, where bit 0 is LSB)
+                K1Bit22 = (int)((k1 >> 22) & 1UL); 
+                K3Bit22 = (int)((k3 >> 22) & 1UL);
             }
             catch
             {
-                K1Binary = K3Binary = "";
+                KBinary = K1Binary = K3Binary = "";
                 K1Bit22 = K3Bit22 = 0;
             }
         }
 
-        async Task RunTrials()
+        private async Task RunTrials()
         {
             IsRunning = true;
             Outcomes.Clear();
@@ -91,7 +92,7 @@ namespace NuminaBit.Web.App.Pages
             StateHasChanged();
         }
 
-        void ClearResults()
+        private void ClearResults()
         {
             Outcomes.Clear();
             CumulativeSuccessPercent.Clear();
@@ -99,7 +100,7 @@ namespace NuminaBit.Web.App.Pages
         }
 
         // helpers
-        private string ToBinaryString(ulong v, int width)
+        private static string ToBinaryString(ulong v, int width)
         {
             var sb = new System.Text.StringBuilder(width);
             for (int i = 0; i < width; i++)
@@ -109,27 +110,6 @@ namespace NuminaBit.Web.App.Pages
                 if ((i + 1) % 8 == 0 && i < width - 1) sb.Append(' ');
             }
             return sb.ToString();
-        }
-
-        private string GetKeyBinaryFull()
-        {
-            try
-            {
-                ulong key64 = UseHiddenKey ? _attack.HiddenKey : HexUtil.Parse64(KeyHex);
-                return ToBinaryString(key64, 64);
-            }
-            catch { return ""; }
-        }
-
-        private string KeyToUtf8Preview()
-        {
-            try
-            {
-                // try interpret key hex as bytes -> utf8 (print ASCII-ish)
-                var bytes = HexUtil.ToBytes(KeyHex);
-                return System.Text.Encoding.UTF8.GetString(bytes);
-            }
-            catch { return ""; }
         }
     }
 }

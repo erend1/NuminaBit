@@ -7,15 +7,16 @@ using NuminaBit.Services;
 
 var services = new ServiceCollection();
 
-services.AddNuminaBitServices(); // Your DLL extension method
-services.AddTransient<IEquationBuilderExamples, EquationBuilderExamples>(); // Register your service
+services.AddNuminaBitServices();
+services.AddTransient<IAttackRunner2Examples, AttackRunner2Examples>();
+services.AddTransient<IEquationBuilderExamples, EquationBuilderExamples>(); 
 
 var provider = services.BuildServiceProvider();
 
 using var scope = provider.CreateScope();
 
-var myService = scope.ServiceProvider.GetRequiredService<IEquationBuilderExamples>();
+var myService = scope.ServiceProvider.GetRequiredService<IAttackRunner2Examples>();
 
-myService.Example2();
+myService.Example1();
 
 Console.ReadLine();

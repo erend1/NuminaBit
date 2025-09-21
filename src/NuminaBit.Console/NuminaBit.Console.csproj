@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\NuminaBit.Services\NuminaBit.Services.csproj" />
+    <ProjectReference Include="..\NuminaBit.Services\NuminaBit.Services.csproj" />
   </ItemGroup>
 
 </Project>
