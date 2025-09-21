@@ -8,16 +8,16 @@ using NuminaBit.Services;
 var services = new ServiceCollection();
 
 services.AddNuminaBitServices();
-services.AddTransient<IAttackRunner2Examples, AttackRunner2Examples>();
+services.AddTransient<IAttackRunnerExamples, AttackRunnerExamples>();
 services.AddTransient<IEquationBuilderExamples, EquationBuilderExamples>(); 
 
 var provider = services.BuildServiceProvider();
 
 using var scope = provider.CreateScope();
 
-var myService = scope.ServiceProvider.GetRequiredService<IEquationBuilderExamples>();
+var equationBuilderExamples = scope.ServiceProvider.GetRequiredService<IEquationBuilderExamples>();
+var attackRunner2Examples = scope.ServiceProvider.GetRequiredService<IAttackRunnerExamples>();
 
-myService.Example1();
-myService.Example2();
+attackRunner2Examples.Example2();
 
 Console.ReadLine();

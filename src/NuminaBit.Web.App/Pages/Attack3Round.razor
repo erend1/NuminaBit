@@ -1,42 +1,108 @@
-﻿@page "/attack-3-round"
+﻿@page "/attack-3-round-2"
+
+@using System.Globalization
+@using NuminaBit.Services.Ciphers.DES.Entities;
 
 @inject ILogger<Attack3Round> Log
+@inject NuminaBit.Services.Ciphers.DES.Interfaces.ICore _des
 @inject NuminaBit.Services.Ciphers.DES.Interfaces.IAttackRunner _attack
+
 
 <RadzenCard Style="margin:1rem;">
   <ChildContent>
-    <div class="space-y-4">
-      <RadzenFieldset Text="Input Settings" Expandable="false">
-        <div class="grid md:grid-cols-2 gap-4">
-          <div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <!-- Left column: Inputs & controls -->
+      <div class="space-y-3">
+        <RadzenFieldset Text="Inputs">
+          <div class="grid grid-cols-1 gap-2">
             <RadzenTextBox style="width:100%" Placeholder="16 hex" @bind-Value="KeyHex" Disabled="@UseHiddenKey" />
-            <div class="text-xs text-gray-500">Secret Key (64-bit, hex)</div>
-            <RadzenCheckBox @bind-Value="UseHiddenKey" />
-            <label class="text-sm">Use hidden system key</label>
-          </div>
-          <div>
-            <RadzenDropDown Data="@PairCounts" @bind-Value="PairCount" />
-            <div class="text-xs text-gray-500">Number of plaintext/ciphertext pairs</div>
-          </div>
-        </div>
-      </RadzenFieldset>
+            <div class="text-xs text-gray-500">Key (64-bit hex)</div>
+            <div class="flex items-center gap-2">
+              <RadzenCheckBox @bind-Value="UseHiddenKey" />
+              <label class="text-sm">Use hidden system key</label>
+            </div>
 
-      <RadzenButton Icon="play_arrow" Text="Run Attack" ButtonStyle="ButtonStyle.Primary" Click="RunAttack" />
-      <RadzenProgressBar Value="@(IsRunning ? 50 : 0)" Mode="ProgressBarMode.Indeterminate" Visible="@IsRunning" />
+            <div class="flex items-center gap-2">
+              <label class="text-sm">Pairs per trial</label>
+              <RadzenDropDown Data="@PairCounts" @bind-Value="PairsPerTrial" Style="width:120px" />
+            </div>
 
-      @if (ResultMessage != null)
-      {
-        <RadzenFieldset Text="Result" Expandable="false">
-          <div class="text-sm">
-            <div><b>Equation:</b> P_H[7,18,24,29] ⊕ C_H[7,18,24,29] ⊕ P_L[15] ⊕ C_L[15] = K1[22] ⊕ K3[22]</div>
-            <div><b>Attack Guess:</b> @ResultMessage</div>
+            <div class="flex items-center gap-2">
+              <label class="text-sm">Number of trials</label>
+              <RadzenDropDown Data="@TrialsOptions" @bind-Value="TrialsCount" Style="width:120px" />
+            </div>
+
+            <div class="flex gap-2 mt-2">
+              <RadzenButton Icon="play_arrow" Text="Run Trials" ButtonStyle="ButtonStyle.Primary" Click="RunTrials" Disabled="@IsRunning" />
+              <RadzenButton Icon="refresh" Text="Clear Results" Click="ClearResults" Disabled="@IsRunning" />
+            </div>
+
+            <RadzenProgressBar Mode="ProgressBarMode.Determinate" Value="@ProgressPct" Visible="@IsRunning" />
           </div>
         </RadzenFieldset>
-      }
 
-      <RadzenFieldset Text="Algorithm 2 (coming soon)" Expandable="false">
-        <div class="text-sm text-gray-500">This section is reserved for Algorithm 2 implementation.</div>
-      </RadzenFieldset>
+        <RadzenFieldset Text="Key Viewer (K1 & K3)">
+          <div class="text-sm space-y-2 p-2">
+            <div>Key (hex): <strong>@DisplayKeyHex</strong></div>
+            <div>Key (binary): <code style="font-family:monospace">@KBinary</code></div>
+            <div class="mt-2">
+              <div><b>K1 (round1 subkey, 48-bit):</b></div>
+              <pre style="font-family:monospace">@K1Binary</pre>
+              <div><b>K3 (round3 subkey, 48-bit):</b></div>
+              <pre style="font-family:monospace">@K3Binary</pre>
+              <div class="mt-1 text-sm">Highlighted bit: <b>pos 22</b> (1-indexed in subkey). Values: K1[22]=@K1Bit22, K3[22]=@K3Bit22</div>
+            </div>
+          </div>
+        </RadzenFieldset>
+
+      </div>
+
+      <!-- Right column: Results and visualization -->
+      <div class="space-y-3">
+        <RadzenFieldset Text="Trials Results">
+          <div>
+            <RadzenDataGrid Data="@Outcomes"  
+                            KeyProperty="Id" 
+                            TItem="TrialOutcome" 
+                            AllowVirtualization="true" 
+                            ColumnWidth="200px" 
+                            Style="height:260px">
+              <Columns>
+                <RadzenDataGridColumn TItem="TrialOutcome" Property="Pairs" Title="Pairs" />
+                <RadzenDataGridColumn TItem="TrialOutcome" Property="CountZero" Title="Count of 0's'" />
+                <RadzenDataGridColumn TItem="TrialOutcome" Property="CountOne" Title="Count of 1's'" />
+                <RadzenDataGridColumn TItem="TrialOutcome" Property="GuessedBit" Title="Guessed" />
+                <RadzenDataGridColumn TItem="TrialOutcome" Property="ActualBit" Title="Actual" />
+                <RadzenDataGridColumn TItem="TrialOutcome" Property="Success" Title="Success" />
+              </Columns>
+            </RadzenDataGrid>
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Success Rate Chart">
+            <div style="height:240px">
+                <RadzenChart Style="height:220px">
+                    <RadzenCategoryAxis>
+                        <RadzenAxisTitle Text="Category" /> <!-- Add your category title here -->
+                    </RadzenCategoryAxis>
+
+                    <RadzenValueAxis Min="0" Max="100">
+                        <RadzenAxisTitle Text="Success Rate (%)" /> <!-- Add your value axis title here -->
+                    </RadzenValueAxis>
+
+                    <RadzenLineSeries Data="@CumulativeSuccessPercent" CategoryProperty="Key" ValueProperty="Value" StrokeWidth="3" />
+                </RadzenChart>
+            </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Summary">
+          <div class="p-2 text-sm">
+            <div>Total Trials: @Outcomes.Count</div>
+            <div>Successful Trials: @Outcomes.Count(o=>o.Success)</div>
+            <div>Final Cumulative Success %: @FinalSuccessPercent.ToString("F1")%</div>
+          </div>
+        </RadzenFieldset>
+      </div>
     </div>
   </ChildContent>
 </RadzenCard>

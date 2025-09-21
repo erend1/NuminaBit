@@ -1,7 +1,8 @@
 ﻿namespace NuminaBit.Console.Services.Shared.Intefaces
 {
-    public interface IAttackRunner2Examples
+    public interface IAttackRunnerExamples
     {
         public void Example1();
+        public void Example2();
     }
 }

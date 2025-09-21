@@ -94,15 +94,15 @@ namespace NuminaBit.Services.Ciphers.DES
                 R = newR;
             }
 
-            //var c = ToBinaryString(L, 32);
-            //var d = ToBinaryString(R, 32);
+            var c = ToBinaryString(L, 32);
+            var d = ToBinaryString(R, 32);
 
-            //ulong preOut = ((ulong)R << 32) | L;
+            ulong preOut = ((ulong)R << 32) | L;
 
-            ulong preOut = ((ulong)L << 32) | R;
+            // TODO: Bak buraya Eren.
+            //ulong preOut = ((ulong)L << 32) | R;
 
-
-            //var e = ToBinaryString(preOut, 64);
+            var e = ToBinaryString(preOut, 64);
 
             return withFP ? Permute(preOut, Permutations.Final, 64) : preOut;
         }
