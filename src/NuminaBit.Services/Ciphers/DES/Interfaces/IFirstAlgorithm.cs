@@ -2,7 +2,7 @@
 
 namespace NuminaBit.Services.Ciphers.DES.Interfaces
 {
-    public interface IAttackRunner
+    public interface IFirstAlgorithm
     {
         public ulong HiddenKey { get; }
 
@@ -11,23 +11,23 @@ namespace NuminaBit.Services.Ciphers.DES.Interfaces
         /// then decide guessed bit by majority (0 if majority of lhs==0).
         /// Returns TrialOutcome with counts and actual bit (XOR of K1[22] and K3[22]).
         /// </summary>
-        public Task<TrialOutcome> RunAlgorithm1On3RoundSingleAsync(ulong key64, int pairs);
+        public Task<TrialOutcome> ExecuteOn3RoundSingle(int id, ulong key64, int pairs, CancellationToken ct = default);
 
         /// <summary>
         /// Run multiple independent trials and return their outcomes.
         /// </summary>
-        public Task<List<TrialOutcome>> RunAlgorithm1OnRound3MultipleAsync(ulong key64, int pairsPerTrial, int trials);
+        public Task<List<TrialOutcome>> ExecuteOnRound3Multiple(ulong key64, int pairsPerTrial, int trials, CancellationToken ct = default);
 
         /// <summary>
         /// Run a single Algorithm-1 experiment: generate 'pairs' random plaintexts, compute lhs for each,
         /// then decide guessed bit by majority (0 if majority of lhs==0).
         /// Returns TrialOutcome with counts and actual bit (XOR of K1[22] and K3[22]).
         /// </summary>
-        public Task<TrialOutcome> RunAlgorithm1On5RoundSingleAsync(ulong key64, int pairs);
+        public Task<TrialOutcome> ExecuteOn5RoundSingle(int id, ulong key64, int pairs, CancellationToken ct = default);
 
         /// <summary>
         /// Run multiple independent trials and return their outcomes.
         /// </summary>
-        public Task<List<TrialOutcome>> RunAlgorithm1OnRound5MultipleAsync(ulong key64, int pairsPerTrial, int trials);
+        public Task<List<TrialOutcome>> ExecuteOnRound5Multiple(ulong key64, int pairsPerTrial, int trials, CancellationToken ct = default);
     }
 }

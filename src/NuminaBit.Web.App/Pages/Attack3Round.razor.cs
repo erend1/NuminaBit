@@ -1,24 +1,26 @@
 ﻿using NuminaBit.Services.Utils;
 using NuminaBit.Services.Ciphers.DES;
 using NuminaBit.Services.Ciphers.DES.Entities;
+using System.Collections;
 
 namespace NuminaBit.Web.App.Pages
 {
     public partial class Attack3Round
     {
         // inputs
-        private string KeyHex { get; set; } = "133457799BBCDFF1";
+        private string _keyHex = string.Empty;
+        private string KeyHex { get => _keyHex; set { _keyHex = value; PrepareKeyView(); } }
         private bool UseHiddenKey { get; set; } = false;
-        private int PairsPerTrial { get; set; } = 50;
-        private int TrialsCount { get; set; } = 20;
+        private int PairsPerTrial { get; set; } = 25;
+        private int TrialsCount { get; set; } = 50;
         private bool IsRunning { get; set; } = false;
         private double ProgressPct { get; set; } = 0;
 
-        private readonly int[] PairCounts = [5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 200, 250, 500];
-        private readonly int[] TrialsOptions = [5, 10, 15, 20, 25, 50, 75, 100];
+        private static readonly int[] PairCounts = [5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 200, 250];
+        private static readonly int[] TrialsOptions = [10, 25, 50, 75, 100, 250, 500, 1000];
 
         // results
-        private List<TrialOutcome> Outcomes { get; set; } = [];
+        private Stack<TrialOutcome> Outcomes { get; set; } = [];
         private List<KeyValuePair<int, double>> CumulativeSuccessPercent { get; set; } = [];
 
         // derived key view
@@ -34,6 +36,7 @@ namespace NuminaBit.Web.App.Pages
 
         protected override void OnInitialized()
         {
+            KeyHex = HexUtil.Random64Hex();
             PrepareKeyView();
         }
 
@@ -53,6 +56,7 @@ namespace NuminaBit.Web.App.Pages
                 // Get the 22nd bit from the right (0-indexed, where bit 0 is LSB)
                 K1Bit22 = (int)((k1 >> 22) & 1UL); 
                 K3Bit22 = (int)((k3 >> 22) & 1UL);
+                StateHasChanged();
             }
             catch
             {
@@ -69,24 +73,27 @@ namespace NuminaBit.Web.App.Pages
             ProgressPct = 0;
             StateHasChanged();
 
+            await Task.Delay(1);
+
             ulong key64 = UseHiddenKey ? _attack.HiddenKey : HexUtil.Parse64(KeyHex);
 
-            for (int t = 0; t < TrialsCount; t++)
+            for (int count = 0; count < TrialsCount; count++)
             {
-                var outcome = await _attack.RunAlgorithm1On3RoundSingleAsync(key64, PairsPerTrial);
-                Outcomes.Add(outcome);
+                var outcome = await _attack.ExecuteOn3RoundSingle(count, key64, PairsPerTrial);
+                
+                Outcomes.Push(outcome);
 
                 // cumulative success %
                 double succCount = Outcomes.Count(o => o.Success);
                 double percent = (succCount / Outcomes.Count) * 100.0;
                 CumulativeSuccessPercent.Add(new KeyValuePair<int, double>(Outcomes.Count, percent));
 
-                ProgressPct = (double)Outcomes.Count / TrialsCount * 100.0;
-                StateHasChanged();
-            }
+                ProgressPct = (double)((count * 100.0) / TrialsCount);
 
-            // refresh key view (in case hidden toggle)
-            PrepareKeyView();
+                StateHasChanged();
+                
+                await Task.Delay(1);
+            }
 
             IsRunning = false;
             StateHasChanged();
@@ -97,6 +104,10 @@ namespace NuminaBit.Web.App.Pages
             Outcomes.Clear();
             CumulativeSuccessPercent.Clear();
             ProgressPct = 0;
+            IsRunning = false;
+            UseHiddenKey = false;
+            KeyHex = HexUtil.Random64Hex();
+            PrepareKeyView();
         }
 
         // helpers

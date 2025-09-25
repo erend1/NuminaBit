@@ -16,9 +16,9 @@ namespace NuminaBit.Services
 
             services.TryAddSingleton<ICore, Core>();
             services.TryAddSingleton<ILAT, LatCalculator>();
-            services.TryAddSingleton<IAttackRunner, AttackRunner>();
-            services.TryAddSingleton<IAttackRunner, AttackRunner>();
             services.TryAddSingleton<IEquationBuilder, EquationBuilder>();
+            services.TryAddSingleton<IFirstAlgorithm, FirstAlgorithmRunner>();
+            services.TryAddSingleton<ISecondAlgorithm, SecondAlgorithmRunner>();
 
             return services;
         }

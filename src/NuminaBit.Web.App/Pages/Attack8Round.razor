@@ -1,0 +1,115 @@
+﻿@page "/attack-8-round"
+@using System.Globalization
+@inject ILogger<Attack8Round> Log
+@inject NuminaBit.Services.Ciphers.DES.Interfaces.ISecondAlgorithm _attack
+
+<RadzenCard Style="margin:1rem;">
+  <ChildContent>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <RadzenFieldset Text="Inputs & Parameters">
+          <div class="space-y-2">
+            <RadzenTextBox @bind-Value="KeyHex" Placeholder="16 hex" Disabled="@UseHiddenKey" Style="width:100%" />
+            <div class="flex items-center gap-2">
+              <RadzenCheckBox @bind-Value="UseHiddenKey" />
+              <label class="text-sm">Use hidden system key</label>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-sm">Pairs (N)</label>
+                <RadzenDropDown Data="@PairOptions" @bind-Value="Pairs" Style="width:100%" />
+              </div>
+              <div>
+                <label class="text-sm">Top K per eq</label>
+                <RadzenDropDown Data="@TopKOptions" @bind-Value="TopK" Style="width:100%" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <div>
+                <label class="text-sm">Max combined cand</label>
+                <RadzenTextBox @bind-Value="MaxCombined" Style="width:100%" />
+              </div>
+              <div>
+                <label class="text-sm">Exhaustive limit</label>
+                <RadzenTextBox @bind-Value="ExhaustiveLimit" Style="width:100%" />
+              </div>
+            </div>
+
+            <div class="flex gap-2 mt-3">
+              <RadzenButton Text="Run Algorithm 2" Click="RunAlg2" ButtonStyle="ButtonStyle.Primary" Disabled="@IsRunning" />
+              <RadzenButton Text="Clear" Click="ClearAll" />
+            </div>
+
+            <div class="text-xs text-gray-500 mt-1">
+              <strong>Note:</strong> This is a prototype implementation. For full-scale Matsui experiments you will need to increase resources and use proper mapping for t-index and subkey-to-master-key mapping.
+            </div>
+          </div>
+        </RadzenFieldset>
+      </div>
+
+      <div class="space-y-3">
+        <RadzenFieldset Text="Run History">
+          <RadzenDataGrid Data="@Results" TItem="Alg2ResultView" Style="height:340px">
+            <Columns>
+              <RadzenDataGridColumn TItem="Alg2ResultView" Property="Pairs" Title="Pairs" />
+              <RadzenDataGridColumn TItem="Alg2ResultView" Property="TopK" Title="TopK" />
+              <RadzenDataGridColumn TItem="Alg2ResultView" Property="CombinedTry" Title="CombinedTried" />
+              <RadzenDataGridColumn TItem="Alg2ResultView" Property="Found" Title="Found" />
+              <RadzenDataGridColumn TItem="Alg2ResultView" Property="FoundKeyHex" Title="FoundKey" />
+              <RadzenDataGridColumn TItem="Alg2ResultView" Property="Attempts" Title="Attempts"/>
+            </Columns>
+          </RadzenDataGrid>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="TopKA / TopKB (sample)">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <h4 class="text-sm font-semibold">Top KA</h4>
+              <ul>
+                @if (LastTopKA != null)
+                {
+                    @foreach (var kv in LastTopKA.Take(10))
+                    {
+                                        
+                        <li>@kv.key12 : @kv.score</li>;
+                    }
+                }
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold">Top KB</h4>
+              <ul>
+                @if (LastTopKB != null)
+                {
+                    @foreach (var kv in LastTopKB.Take(10))
+                    {
+                                        
+                        <li>@kv.key12 : @kv.score</li>;
+                    }
+                }
+              </ul>
+            </div>
+          </div>
+        </RadzenFieldset>
+
+        <RadzenFieldset Text="Cumulative Found % (chart)">
+          <div style="height:220px;">
+            <RadzenChart Style="height:200px;">
+                <RadzenCategoryAxis>
+                    <RadzenAxisTitle Text="Category" /> <!-- Add your category title here -->
+                </RadzenCategoryAxis>
+
+                <RadzenValueAxis Min="0" Max="100">
+                    <RadzenAxisTitle Text="Success Rate (%)" /> <!-- Add your value axis title here -->
+                </RadzenValueAxis>
+
+                <RadzenLineSeries Data="@CumulativeFound" CategoryProperty="Key" ValueProperty="Value" StrokeWidth="3" />
+            </RadzenChart>
+          </div>
+        </RadzenFieldset>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenCard>

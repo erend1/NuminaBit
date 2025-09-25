@@ -4,7 +4,7 @@ using NuminaBit.Services.Ciphers.DES.Interfaces;
 
 namespace NuminaBit.Services.Ciphers.DES
 {
-    public class AttackRunner(ICore des): IAttackRunner
+    public class FirstAlgorithmRunner(ICore des): IFirstAlgorithm
     {
         private readonly ICore _des = des;
         private static readonly int[] textBitPositionsRound3 = [7, 18, 24, 29];
@@ -19,7 +19,7 @@ namespace NuminaBit.Services.Ciphers.DES
         /// then decide guessed bit by majority (0 if majority of lhs==0).
         /// Returns TrialOutcome with counts and actual bit (XOR of K1[22] and K3[22]).
         /// </summary>
-        public Task<TrialOutcome> RunAlgorithm1On3RoundSingleAsync(ulong key64, int pairs)
+        public Task<TrialOutcome> ExecuteOn3RoundSingle(int id, ulong key64, int pairs, CancellationToken ct = default)
         {
             return Task.Run(() =>
             {
@@ -63,11 +63,12 @@ namespace NuminaBit.Services.Ciphers.DES
                 int guessed = (countZero > countOne) ? 0 : 1;
 
                 // compute actual target bit = K1[22] xor K3[22]
-                int actual = GetBit((uint)ks.SubKeys[0], 22)
-                            ^ GetBit((uint)ks.SubKeys[2], 22); // k1 index=0, k3 index=2, pos=22
+                int actual = GetBit(ks.SubKeys[0], 22)
+                            ^ GetBit(ks.SubKeys[2], 22); // k1 index=0, k3 index=2, pos=22
 
                 var outcome = new TrialOutcome
                 {
+                    Id = id,
                     Pairs = pairs,
                     CountZero = countZero,
                     CountOne = countOne,
@@ -76,18 +77,18 @@ namespace NuminaBit.Services.Ciphers.DES
                     Success = (guessed == actual)
                 };
                 return outcome;
-            });
+            }, ct);
         }
 
         /// <summary>
         /// Run multiple independent trials and return their outcomes.
         /// </summary>
-        public async Task<List<TrialOutcome>> RunAlgorithm1OnRound3MultipleAsync(ulong key64, int pairsPerTrial, int trials)
+        public async Task<List<TrialOutcome>> ExecuteOnRound3Multiple(ulong key64, int pairsPerTrial, int trials, CancellationToken ct = default)
         {
             var list = new List<TrialOutcome>(trials);
-            for (int t = 0; t < trials; t++)
+            for (int id = 0; id < trials; id++)
             {
-                var outc = await RunAlgorithm1On3RoundSingleAsync(key64, pairsPerTrial);
+                var outc = await ExecuteOn3RoundSingle(id + 1, key64, pairsPerTrial, ct);
                 list.Add(outc);
             }
             return list;
@@ -98,7 +99,7 @@ namespace NuminaBit.Services.Ciphers.DES
         /// then decide guessed bit by majority (0 if majority of lhs==0).
         /// Returns TrialOutcome with counts and actual bit (XOR of K1[22] and K3[22]).
         /// </summary>
-        public Task<TrialOutcome> RunAlgorithm1On5RoundSingleAsync(ulong key64, int pairs)
+        public Task<TrialOutcome> ExecuteOn5RoundSingle(int id, ulong key64, int pairs, CancellationToken ct = default)
         {
             return Task.Run(() =>
             {
@@ -142,13 +143,14 @@ namespace NuminaBit.Services.Ciphers.DES
                 int guessed = (countZero > countOne) ? 0 : 1;
 
                 // compute actual target bit = K1[22] xor K3[22]
-                int actual = ExtractBits((uint) ks.SubKeys[0], keyBitPositionsRound5)
-                            ^ ExtractBits((uint) ks.SubKeys[4], keyBitPositionsRound5)
-                            ^ GetBit((uint)ks.SubKeys[1], 22)
-                            ^ GetBit((uint)ks.SubKeys[3], 22);
+                int actual = ExtractBits(ks.SubKeys[0], keyBitPositionsRound5)
+                            ^ ExtractBits(ks.SubKeys[4], keyBitPositionsRound5)
+                            ^ GetBit(ks.SubKeys[1], 22)
+                            ^ GetBit(ks.SubKeys[3], 22);
 
                 var outcome = new TrialOutcome
                 {
+                    Id = id,
                     Pairs = pairs,
                     CountZero = countZero,
                     CountOne = countOne,
@@ -157,18 +159,18 @@ namespace NuminaBit.Services.Ciphers.DES
                     Success = (guessed == actual)
                 };
                 return outcome;
-            });
+            }, ct);
         }
 
         /// <summary>
         /// Run multiple independent trials and return their outcomes.
         /// </summary>
-        public async Task<List<TrialOutcome>> RunAlgorithm1OnRound5MultipleAsync(ulong key64, int pairsPerTrial, int trials)
+        public async Task<List<TrialOutcome>> ExecuteOnRound5Multiple(ulong key64, int pairsPerTrial, int trials, CancellationToken ct = default)
         {
             var list = new List<TrialOutcome>(trials);
-            for (int t = 0; t < trials; t++)
+            for (int id = 0; id < trials; id++)
             {
-                var outc = await RunAlgorithm1On5RoundSingleAsync(key64, pairsPerTrial);
+                var outc = await ExecuteOn5RoundSingle(id, key64, pairsPerTrial, ct);
                 list.Add(outc);
             }
             return list;
@@ -200,13 +202,21 @@ namespace NuminaBit.Services.Ciphers.DES
             return x;
         }
 
-        private static int GetBit2(uint val, int pos)
+        private static int ExtractBits(ulong val, int[] positions)
         {
-            // pos: 1..32 MSB-first
-            return (int)((val >> (32 - pos)) & 1u);
+            int x = 0;
+            foreach (var pos in positions)
+                x ^= GetBit(val, pos);
+            return x;
         }
 
         private static int GetBit(uint val, int pos)
+        {
+            // pos: 1..32 MSB-first
+            return (int)((val >> pos) & 1U);
+        }
+
+        private static int GetBit(ulong val, int pos)
         {
             // pos: 0..31 LSB-first
             return (int)((val >> pos) & 1UL);

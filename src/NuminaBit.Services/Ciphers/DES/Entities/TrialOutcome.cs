@@ -5,7 +5,7 @@
     /// </summary>
     public sealed record TrialOutcome
     {
-        public Guid TrailId { get; } = Guid.NewGuid();
+        public int Id { get; init; }
         public int Pairs { get; init; }
         public int CountZero { get; init; }
         public int CountOne { get; init; }

@@ -20,8 +20,8 @@
             <RadzenPanelMenuItem Text="Equation Builder" Icon="color_lens" Path=@(_equationBuilderPath) />
             <RadzenPanelMenuItem Text="Attacks" Icon="auto_awesome">
                 <RadzenPanelMenuItem Text="3-Round" Icon="color_lens" Path=@(_attack3Path) />
-                <RadzenPanelMenuItem Text="3-Round-2" Icon="color_lens" Path=@(_attack3_2Path) />
-                <RadzenPanelMenuItem Text="Colors" Icon="invert_colors" />
+                <RadzenPanelMenuItem Text="5-Round" Icon="color_lens" Path=@(_attack5Path) />
+                <RadzenPanelMenuItem Text="8-Round" Icon="color_lens" Path=@(_attack8Path) />
             </RadzenPanelMenuItem>
         </RadzenPanelMenu>
     </RadzenSidebar>
@@ -42,7 +42,8 @@
     private string _latPath = string.Empty;
     private string _equationBuilderPath = string.Empty;
     private string _attack3Path = string.Empty;
-    private string _attack3_2Path = string.Empty;
+    private string _attack5Path = string.Empty;
+    private string _attack8Path = string.Empty;
 
     protected override void OnInitialized()
     {
@@ -55,6 +56,7 @@
         _latPath = _pathService.GetFullPath("lat");
         _equationBuilderPath = _pathService.GetFullPath("equation-builder");
         _attack3Path = _pathService.GetFullPath("attack-3-round");
-        _attack3_2Path = _pathService.GetFullPath("attack-3-round-2");
+        _attack5Path = _pathService.GetFullPath("attack-5-round");
+        _attack8Path = _pathService.GetFullPath("attack-8-round");
     }
 }
