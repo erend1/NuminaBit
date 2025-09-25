@@ -94,15 +94,15 @@ namespace NuminaBit.Services.Ciphers.DES
                 R = newR;
             }
 
-            var c = ToBinaryString(L, 32);
-            var d = ToBinaryString(R, 32);
+            //var c = ToBinaryString(L, 32);
+            //var d = ToBinaryString(R, 32);
 
             ulong preOut = ((ulong)R << 32) | L;
 
             // TODO: Bak buraya Eren.
             //ulong preOut = ((ulong)L << 32) | R;
 
-            var e = ToBinaryString(preOut, 64);
+            //var e = ToBinaryString(preOut, 64);
 
             return withFP ? Permute(preOut, Permutations.Final, 64) : preOut;
         }
@@ -249,6 +249,25 @@ namespace NuminaBit.Services.Ciphers.DES
 
         public ulong Permute(uint val, int[] table, int inWidth, int outWidth = -1)
             => Permute2((ulong)val, table, inWidth, outWidth);
+
+        /// <summary>
+        /// HELPER METHOD FOR AGORITHM 2
+        /// </summary>
+        /// <param name="roundText"></param>
+        /// <param name="roundKey"></param>
+        /// <returns></returns>
+        public uint PerformF(uint roundText, ulong roundKey)
+        {
+            ulong ER = Permute2(roundText, Expansion.Mapping, 32, 48);
+            //var b = ToBinaryString(ER, 48);
+            ulong EX = ER ^ roundKey;
+            //var c = ToBinaryString(EX, 48);
+            uint sOut = SBoxSub(EX);
+            //var d = ToBinaryString(sOut, 32);
+            uint pOut = (uint)Permute2(sOut, Permutations.P, 32);
+
+            return pOut;
+        }
 
         private static uint LeftShift28(uint v, int s)
         {

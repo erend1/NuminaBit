@@ -12,7 +12,7 @@ namespace NuminaBit.Console.Services.Shared
             var successes = 0;
             for (int i = 0; i < 100; i++)
             {
-                var a = await _attack.RunSingleAsync(0x133456798BBCDFF1UL, 1 >> 20, 128, 2048, 10000);
+                var a = await _attack.RunSingleAsync(0x133456798BBCDFF1UL, 1 << 20);
             }
             System.Console.WriteLine($"Done Example1 : {successes}");
             System.Console.ReadLine();
@@ -47,6 +47,16 @@ namespace NuminaBit.Console.Services.Shared
             var d = GetBit(21, 2);
             var e = GetBit(21, 3);
             var f = GetBit(21, 4);
+        }
+
+        public async Task Example3()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var a = await _attack.RunSingleAsync(0x133423798BBEDFF1UL, (int) 1 << 22);
+            }
+            System.Console.WriteLine($"Done Example3");
+            System.Console.ReadLine();
         }
     }
 }

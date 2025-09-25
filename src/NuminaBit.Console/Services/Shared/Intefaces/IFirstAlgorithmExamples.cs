@@ -2,7 +2,7 @@
 {
     public interface IFirstAlgorithmExamples
     {
-        public void Example1();
-        public void Example2();
+        Task Example1();
+        Task Example2();
     }
 }

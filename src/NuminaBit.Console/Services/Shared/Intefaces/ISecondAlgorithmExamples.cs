@@ -2,7 +2,8 @@
 {
     public interface ISecondAlgorithmExamples
     {
-        public Task Example1();
-        public Task Example2();
+        Task Example1();
+        Task Example2();
+        Task Example3();
     }
 }

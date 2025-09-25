@@ -7,7 +7,7 @@ namespace NuminaBit.Console.Services.Shared
     {
         private readonly IFirstAlgorithm _attack = attack;
 
-        public async void Example1()
+        public async Task Example1()
         {
             var successes = 0;
             for (int i = 0; i < 100; i++)
@@ -21,12 +21,12 @@ namespace NuminaBit.Console.Services.Shared
             System.Console.ReadLine();
         }
 
-        public async void Example2()
+        public async Task Example2()
         {
             var successes = 0;
             for (int i = 0; i < 100; i++)
             {
-                var a = await _attack.ExecuteOn5RoundSingle(2, 0x133456798BBCDFF1UL, 3000);
+                var a = await _attack.ExecuteOn5RoundSingle(2, 0x133453798ABCDFF1UL, 3000);
                 System.Console.WriteLine(a.Success);
                 if (a.Success)
                     successes++;

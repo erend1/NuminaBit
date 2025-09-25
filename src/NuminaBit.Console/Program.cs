@@ -21,6 +21,6 @@ var equationBuilderExamples = scope.ServiceProvider.GetRequiredService<IEquation
 var firstAttackExamples = scope.ServiceProvider.GetRequiredService<IFirstAlgorithmExamples>();
 var secondAttackExamples = scope.ServiceProvider.GetRequiredService<ISecondAlgorithmExamples>();
 
-secondAttackExamples.Example2().Wait();
+secondAttackExamples.Example3().Wait();
 
 Console.ReadLine();
