@@ -13,7 +13,8 @@
           <div class="space-y-2">
             <RadzenDropDown TValue="int" @bind-Value="SelectedSBoxIndex" Data="@SBoxOptions" TextProperty="Text" ValueProperty="Value" Style="width:100%" />
             <div class="text-xs text-gray-500">Mevcut DES S-box'larından birini seçin veya 'Custom' ile manuel girin.</div>
-            <RadzenButton Text="Reset (Default)" Click="ResetToDefault" Style="margin-top:8px" />
+            <RadzenButton Text="Yükle" Click="LoadFromHelpers" />
+            <RadzenButton Text="Sıfırla (Default)" Click="ResetToDefault" Style="margin-top:8px" />
           </div>
         </RadzenFieldset>
 
@@ -37,7 +38,6 @@
           <div class="text-xs text-gray-500 mt-2">Her hücre 0..15 (4-bit çıktı). Alternatif olarak dışarıdan 64 elemanlı dizi kullanabilirsiniz.</div>
           <div class="flex gap-2 mt-2">
             <RadzenButton Text="Hesapla NS-32" Click="ComputeLAT" ButtonStyle="ButtonStyle.Primary" />
-            <RadzenButton Text="Load from DesHelpers" Click="LoadFromHelpers" />
           </div>
         </RadzenFieldset>
 

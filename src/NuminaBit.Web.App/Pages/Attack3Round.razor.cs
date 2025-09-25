@@ -1,13 +1,13 @@
 ﻿using NuminaBit.Services.Utils;
-using NuminaBit.Services.Ciphers.DES;
 using NuminaBit.Services.Ciphers.DES.Entities;
-using System.Collections;
 
 namespace NuminaBit.Web.App.Pages
 {
     public partial class Attack3Round
     {
         // inputs
+        private CancellationTokenSource _cts = new();
+
         private string _keyHex = string.Empty;
         private string KeyHex { get => _keyHex; set { _keyHex = value; PrepareKeyView(); } }
         private bool UseHiddenKey { get; set; } = false;
@@ -67,36 +67,43 @@ namespace NuminaBit.Web.App.Pages
 
         private async Task RunTrials()
         {
+            _cts = new();
             IsRunning = true;
             Outcomes.Clear();
             CumulativeSuccessPercent.Clear();
             ProgressPct = 0;
             StateHasChanged();
 
+            var token = _cts.Token; // just to avoid warning
             await Task.Delay(1);
 
-            ulong key64 = UseHiddenKey ? _attack.HiddenKey : HexUtil.Parse64(KeyHex);
-
-            for (int count = 0; count < TrialsCount; count++)
+            try
             {
-                var outcome = await _attack.ExecuteOn3RoundSingle(count, key64, PairsPerTrial);
+                ulong key64 = UseHiddenKey ? _attack.HiddenKey : HexUtil.Parse64(KeyHex);
+
+                for (int count = 0; count < TrialsCount; count++)
+                {
+                    var outcome = await _attack.ExecuteOn3RoundSingle(count, key64, PairsPerTrial);
                 
-                Outcomes.Push(outcome);
+                    Outcomes.Push(outcome);
 
-                // cumulative success %
-                double succCount = Outcomes.Count(o => o.Success);
-                double percent = (succCount / Outcomes.Count) * 100.0;
-                CumulativeSuccessPercent.Add(new KeyValuePair<int, double>(Outcomes.Count, percent));
+                    // cumulative success %
+                    double succCount = Outcomes.Count(o => o.Success);
+                    double percent = (succCount / Outcomes.Count) * 100.0;
+                    CumulativeSuccessPercent.Add(new KeyValuePair<int, double>(Outcomes.Count, percent));
 
-                ProgressPct = (double)((count * 100.0) / TrialsCount);
+                    ProgressPct = (double)((count * 100.0) / TrialsCount);
 
-                StateHasChanged();
+                    StateHasChanged();
                 
-                await Task.Delay(1);
+                    await Task.Delay(1);
+                }
             }
-
-            IsRunning = false;
-            StateHasChanged();
+            finally
+            {
+                IsRunning = false;
+                StateHasChanged();
+            }
         }
 
         private void ClearResults()
@@ -108,6 +115,13 @@ namespace NuminaBit.Web.App.Pages
             UseHiddenKey = false;
             KeyHex = HexUtil.Random64Hex();
             PrepareKeyView();
+        }
+
+        private void Cancel()
+        {
+            _cts.Cancel();
+            IsRunning = false;
+            StateHasChanged();
         }
 
         // helpers

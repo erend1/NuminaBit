@@ -12,14 +12,14 @@ namespace NuminaBit.Web.App.Services
             GitHub
         }
 
-        private readonly string _defaultBasePath = "/";
-        private readonly string _defaultBasePathOnGitHub = "/NuminaBit/";
+        private static readonly string _defaultBasePath = "/";
+        private static readonly string _defaultBasePathOnGitHub = "/NuminaBit/";
 
         private bool isInitialized = false;
         private HostType hostType = HostType.Default;
         private readonly NavigationManager _nav = nav;
 
-        public string BasePath { get; private set; } = string.Empty;
+        public string BasePath { get; private set; } = _defaultBasePath;
 
         private bool SetBasePath()
         {

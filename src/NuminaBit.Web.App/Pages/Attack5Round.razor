@@ -17,10 +17,12 @@
           <div class="grid grid-cols-1 gap-2">
             <RadzenTextBox style="width:100%" Placeholder="16 hex" @bind-Value="KeyHex" Disabled="@(UseHiddenKey || IsRunning)" />
             <div class="text-xs text-gray-500">Key (64-bit hex)</div>
+            @*
             <div class="flex items-center gap-2">
               <RadzenCheckBox @bind-Value="UseHiddenKey" />
               <label class="text-sm">Use hidden system key</label>
             </div>
+            *@
 
             <div class="flex items-center gap-2">
               <label class="text-sm">Pairs per trial</label>
@@ -35,7 +37,7 @@
             <div class="flex gap-2 mt-2">
               <RadzenButton Icon="play_arrow" Text="Run Trials" ButtonStyle="ButtonStyle.Primary" Click="RunTrials" Disabled="@IsRunning" />
               <RadzenButton Icon="refresh" Text="Clear Results" Click="ClearResults" Disabled="@IsRunning" />
-              <RadzenButton Icon="refresh" Text="Cancel" Click="Cancel" Visible="@(!IsRunning)" />
+                            <RadzenButton Icon="dangerous" Text="Cancel Run" Click="Cancel" Visible="@IsRunning" />
             </div>
           </div>
         </RadzenFieldset>

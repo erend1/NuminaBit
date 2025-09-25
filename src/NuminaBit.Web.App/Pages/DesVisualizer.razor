@@ -33,8 +33,10 @@
             <RadzenButton Icon="play_arrow" Text="Çalıştır" ButtonStyle="ButtonStyle.Primary" Click="RunAll" />
             <RadzenButton Icon="skip_next" Text="Adım" Click="StepOnce" />
             <RadzenButton Icon="restart_alt" Text="Sıfırla" Click="Reset" />
+            @*
             <RadzenCheckBox @bind-Value="ShowBinary" />
             <label class="text-sm">İkilik göster</label>
+            *@
           </div>
         </RadzenFieldset>
 
@@ -47,7 +49,7 @@
 
         <RadzenFieldset Text="Tıklama/İzleme" AllowCollapse="true">
           <div class="text-sm break-words">
-            <div>Seçili Bit: @(Selected?.ToString() ?? "(yok)")</div>
+            <div>Seçili Bit: (Henüz geliştirilme aşamasında ...)</div>
           </div>
         </RadzenFieldset>
       </div>

@@ -9,18 +9,18 @@
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
             <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
-            <RadzenLabel Text="Header" />
+            <RadzenLabel Text="Lineer Kriptoanaliz Sunumuer" />
         </RadzenStack>
     </RadzenHeader>
     <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
         <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Overview" Icon="home" Path="/" Match="NavLinkMatch.All"/>
-            <RadzenPanelMenuItem Text="DES" Icon="password" Path=@(_desPath) />
-            <RadzenPanelMenuItem Text="LAT" Icon="tab" Path=@(_latPath) />
-            <RadzenPanelMenuItem Text="Equation Builder" Icon="color_lens" Path=@(_equationBuilderPath) />
-            <RadzenPanelMenuItem Text="Attacks" Icon="auto_awesome">
-                <RadzenPanelMenuItem Text="3-Round" Icon="color_lens" Path=@(_attack3Path) />
-                <RadzenPanelMenuItem Text="5-Round" Icon="color_lens" Path=@(_attack5Path) />
+            <RadzenPanelMenuItem Text="Overview" Icon="home" Path=@(_homePath) Match="NavLinkMatch.All" />
+            <RadzenPanelMenuItem Text="DES" Icon="https" Path=@(_desPath) />
+            <RadzenPanelMenuItem Text="LAT" Icon="grid_on" Path=@(_latPath) />
+            <RadzenPanelMenuItem Text="Equation Builder" Icon="calculate" Path=@(_equationBuilderPath) />
+            <RadzenPanelMenuItem Text="Attacks" Icon="swords">
+                <RadzenPanelMenuItem Text="3-Round" Icon="counter_3" Path=@(_attack3Path) />
+                <RadzenPanelMenuItem Text="5-Round" Icon="counter_5" Path=@(_attack5Path) />
             </RadzenPanelMenuItem>
         </RadzenPanelMenu>
     </RadzenSidebar>
@@ -29,14 +29,18 @@
             @Body
         </div>
     </RadzenBody>
-    <RadzenFooter>
-        Footer
+    <RadzenFooter Style="margin-top:2rem; padding:1rem; text-align:center; font-size:0.9rem; color:#555;">
+        © 2025 Hüseyin Eren Demirtaş · TÜBİTAK / BİLGEM / UEKAE
+        <br />
+        <a href="mailto:huseyinerend1@gmail.com">İletişim</a> ·
+        <a href="https://github.com/erend1/NuminaBit" target="_blank">GitHub</a>
     </RadzenFooter>
 </RadzenLayout>
 
 @code {
     private bool sidebar1Expanded = true;
 
+    private string _homePath = string.Empty;
     private string _desPath = string.Empty;
     private string _latPath = string.Empty;
     private string _equationBuilderPath = string.Empty;
@@ -48,9 +52,7 @@
     {
         var isInitialized = _pathService.Initialize();
 
-        Console.WriteLine($"BasePathService isInitialized: {isInitialized}");
-        Console.WriteLine($"BasePath: {_pathService.BasePath}");
-
+        _homePath = _pathService.GetFullPath(string.Empty);
         _desPath = _pathService.GetFullPath("des");
         _latPath = _pathService.GetFullPath("lat");
         _equationBuilderPath = _pathService.GetFullPath("equation-builder");

@@ -1,7 +1,59 @@
 ﻿@page "/"
+@using NuminaBit.Web.App.Services.Interfaces
 
-<PageTitle>Home</PageTitle>
+@inject IBasePathService _pathService
 
-<h1>Hello, world!</h1>
+<RadzenCard Style="margin:2rem; padding:1.5rem;">
+    <ChildContent>
+        <!-- Header -->
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+            <span style="font-size:1.25rem; font-weight:bold;">Lineer Kriptoanaliz Sunumu</span>
+            <RadzenBadge Style="background:#2563eb;color:#fff" Text="ODTÜ · TÜBİTAK Projesi" />
+        </div>
 
-Welcome to your new app.
+        <div class="space-y-6 text-gray-800 leading-relaxed">
+
+            <p>
+                Bu web sitesi, <strong>Mitsuru Matsui</strong>’nin DES üzerinde gerçekleştirdiği 
+                <strong>lineer kriptoanaliz</strong> yöntemini adım adım açıklamak, 
+                görselleştirmek ve deneysel olarak uygulamak amacıyla hazırlanmıştır.  
+
+            </p>
+
+            <p>
+                Çalışma, ODTÜ Kriptografi yüksek lisans programı kapsamında gerçekleştirilmiş
+                ve TÜBİTAK BİLGEM için sunulmaktadır.
+            </p>
+            @*
+            <RadzenAlert Style="background:#f3f4f6;color:#111;border-left:4px solid #2563eb;" Severity="Info">
+                Sunum süresi yaklaşık <strong>90 dakika</strong> olup, katılımcıların kavramları
+                takip edebilmesi için gerekli tüm notasyonlar, tablolar ve uygulamalar bu siteye
+                entegre edilmiştir.
+            </RadzenAlert>
+            *@
+
+            <h3 class="text-lg font-semibold mt-6">Sitede Neler Bulacaksınız?</h3>
+            <ul class="list-disc list-inside space-y-2">
+                <li><strong>DES Görselleştirici:</strong> DES şifrelemesinin adım adım işleyişi.</li>
+                <li><strong>S-kutusu Analizleri:</strong> Lineer yaklaşım tabloları (LAT) ve detaylı hesaplamalar.</li>
+                <li><strong>Yaklaşım Denklemleri:</strong> Seçilen α ve β değerleri için oluşturulan doğrusal bağıntılar.</li>
+                <li><strong>3 ve 5 Turluk Ataklar:</strong> Algoritma 1 kullanılarak gerçekleştirilen deneyler.</li>
+            </ul>
+
+            <h3 class="text-lg font-semibold mt-6">Notasyon ve Kaynaklar</h3>
+            <p>
+                Sunumda kullanılan tüm formüller, notasyonlar ve tanımlar 
+                <strong>Matsui’nin makaleleri</strong> esas alınarak düzenlenmiştir.  
+                İlgili denklemler ve figürler için ayrıca bir <em>özet</em> 
+                dökümanı da hazırlanmıştır.
+            </p>
+
+            <h3 class="text-lg font-semibold mt-6">Erişim</h3>
+            <p>
+                Sunum sırasında veya sonrasında web sitesine tekrar erişmek isteyenler için 
+                aşağıdaki bağlantı kullanılabilir:
+            </p>
+            <RadzenLink Path=@(_pathService.BasePath) Text="🔗 Lineer Kriptoanaliz Sunum Sitesi" Style="color:#2563eb;font-weight:600;" />
+        </div>
+    </ChildContent>
+</RadzenCard>
