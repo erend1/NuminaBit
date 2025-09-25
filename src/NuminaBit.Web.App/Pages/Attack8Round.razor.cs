@@ -39,7 +39,7 @@ namespace NuminaBit.Web.App.Pages
                 ulong key = UseHiddenKey ? _attack.HiddenKey : HexUtil.Parse64(KeyHex);
                 var maxCombined = int.Parse(MaxCombined);
                 var exhaustiveLimit = int.Parse(ExhaustiveLimit);
-                var res = await _attack.RunSingleAsync(key, Pairs, TopK, maxCombined, exhaustiveLimit);
+                var res = await _attack.RunSingleAsync(key, Pairs);
 
                 // convert result
                 Results.Push(new Alg2ResultView
