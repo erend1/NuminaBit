@@ -24,6 +24,7 @@
     <ProjectGuid>{ca96291b-8802-44c4-8216-4bb520f557c6}</ProjectGuid>
     <RootNamespace>NuminaBitLightWeight</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>NuminaBit.Lightweight</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -124,7 +125,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="present.c" />
-    <ClCompile Include="test_present.c" />
+    <ClCompile Include="present_run.c" />
+    <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="present.h" />

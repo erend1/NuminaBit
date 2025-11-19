@@ -57,7 +57,7 @@ static bit64 sBoxLayer(bit64 state)
     for (int i = 0; i < 16; i++) 
     {
 		// Although nib represents a 4 bit value, we use bit8 type for easy indexing.
-        bit8 nib = (state >> (4 * i)) & BIT4_FULL_MASK;
+        bit8 nib = (state >> (4 * i)) & NIBBLE_MASK;
         bit64 s = SBOX[nib];
         out |= (s << (4 * i));
     }
@@ -74,7 +74,7 @@ static bit64 sBoxLayerInv(bit64 state)
     for (int i = 0; i < 16; i++) 
     {
         // Although nib represents a 4 bit value, we use bit8 type for easy indexing.
-        bit8 nib = (state >> (4 * i)) & BIT4_FULL_MASK;
+        bit8 nib = (state >> (4 * i)) & NIBBLE_MASK;
         bit64 s = SBOX_INV[nib];
         out |= (s << (4 * i));
     }
@@ -173,20 +173,58 @@ bit64 present_encrypt_block(bit64 state, const bit64 roundKeys[32])
     return state;
 }
 
+// This method is a simple helper to convert 8 bytes from array to 64 bit value.
+static bit64 load64(const bit8* p)
+{
+    bit64 v = 0;
+    for (int i = 0; i < 8; i++)
+        v = (v << 8) | p[i];
+    return v;
+}
+
+// This method is a simple helper to stores 64 bit in 8 bytes.
+static void save64(bit64 v, bit8* out)
+{
+    for (int i = 7; i >= 0; i--) 
+    {
+        out[i] = v & BIT8_MASK;
+        v = v >> 8;
+    }
+}
+
+/* This method performs PRESENT encryption in CBC mode. The plaintext is padded plaintext bytes.
+   The length is padded length, which must be multiple of 8. The roundKeys are 32 round keys.
+   The iv is 8 byte IV. Fianlly, the ciphertext is output buffer. */
+void present_cbc_encrypt(const bit8* plaintext, int length,
+    const bit64 roundKeys[32], const bit8 iv[8], bit8* ciphertext)
+{
+	// In CBC mode the IV as 64-bit value can be set prev initially.
+    bit64 prev = load64(iv);  
+
+    for (int i = 0; i < length; i += 8)
+    {
+        // We load the plaintext block.
+        bit64 block = load64(&plaintext[i]);
+
+        // We apply CBC XOR (64 bit).
+        bit64 state = block ^ prev;
+
+        // We apply encrypt block.
+        bit64 enc = present_encrypt_block(state, roundKeys);
+
+        // We store the ciphertext to next round.
+        save64(enc, &ciphertext[i]);
+
+        // We finally update prev for next block.
+        prev = enc;
+    }
+}
+
+
 /* Decryption (inverse operations) */
 static bit64 pLayerInv(bit64 state)
 {
     /* inverse permutation: compute forward mapping and invert */
-    bit64 out = 0;
-    for (int i = 0; i < 63; i++) 
-    {
-        /* forward: i -> (16*i)%63, so inverse is solve j such that (16*j)%63 == i
-           but easiest: for j=0..62, if bit j is set in input then put at (16*j)%63 in out.
-           For inverse we reverse: if bit at position p in input, find j such that (16*j)%63 == p
-        */
-        /* Simpler: iterate over all source positions and move them to original pos */
-    }
-    /* Simpler method: brute-force invert */
     bit64 tmp = 0;
     for (int i = 0; i < 63; i++) {
         if ((state >> ((16 * i) % 63)) & BIT64_ONE) {
@@ -201,10 +239,43 @@ bit64 present_decrypt_block(bit64 state, const bit64 roundKeys[32])
 {
     /* inverse of final whitening */
     state ^= roundKeys[31];
-    for (int r = 30; r >= 0; --r) {
+    for (int r = 30; r >= 0; r--) {
         state = pLayerInv(state);
         state = sBoxLayerInv(state);
         state ^= roundKeys[r];
     }
     return state;
+}
+
+/* This method performs PRESENT decryption in CBC mode.
+   ciphertext : padded ciphertext bytes (multiple of 8)
+   length     : padded length
+   roundKeys  : 32 round keys
+   iv         : 8-byte IV
+   plaintext  : output buffer (same size)
+*/
+void present_cbc_decrypt(const bit8* ciphertext, int length,
+    const bit64 roundKeys[32],
+    const bit8 iv[8],
+    bit8* plaintext)
+{
+    bit64 prev = load64(iv);   // Use IV for first block
+
+    for (int i = 0; i < length; i += 8)
+    {
+        /* Load current ciphertext block */
+        bit64 cblock = load64(&ciphertext[i]);
+
+        /* Decrypt block (reverse of encryption) */
+        bit64 dec = present_decrypt_block(cblock, roundKeys);
+
+        /* CBC XOR to obtain plaintext */
+        bit64 pblock = dec ^ prev;
+
+        /* Store plaintext block */
+        save64(pblock, &plaintext[i]);
+
+        /* Update prev to current ciphertext block */
+        prev = cblock;
+    }
 }
