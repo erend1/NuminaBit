@@ -1,5 +1,4 @@
-﻿#include <ctype.h>
-#include <stdio.h>
+﻿#include <stdio.h>
 #include "present_constants.h"
 
 // ================================================================
@@ -75,4 +74,23 @@ static int standard_padding(uint8_t* data, int length)
     }
 
     return length;
+}
+
+// This method is a simple helper to convert 8 bytes from array to 64 bit value.
+static bit64 load64(const bit8* p)
+{
+    bit64 v = 0;
+    for (int i = 0; i < 8; i++)
+        v = (v << 8) | p[i];
+    return v;
+}
+
+// This method is a simple helper to stores 64 bit in 8 bytes.
+static void save64(bit64 v, bit8* out)
+{
+    for (int i = 7; i >= 0; i--)
+    {
+        out[i] = v & BIT8_MASK;
+        v = v >> 8;
+    }
 }
