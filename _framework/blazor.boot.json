@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "NuminaBit.Web.App",
   "resources": {
-    "hash": "sha256-9gpwKIolZ7LsVGg0T9psQrJgUGDQIDbHQFi1pfJiUOQ=",
+    "hash": "sha256-liKpi5RkuAOssrSnW46pjS7vYQ4pzpcihwL5GEWSb0g=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-vtotCeXt2UD6oc459laJT32vBgigZ+eLoUmdeFkvYDk="
     },
@@ -34,8 +34,8 @@
       "Microsoft.Extensions.Primitives.wasm": "sha256-xyqqv0SMCahnrOs+p5QYDHoh/BAYlbNtyjTTpqmRW/g=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-FdHug4S2a7HOsi37rnvEfDrrRGQkT4tHlR4E9AN0Obg=",
       "Microsoft.JSInterop.wasm": "sha256-sRvhXy9J+rEnc1zc6f8XQzLBwRhu1CrVWxhzHBbD7TE=",
-      "NuminaBit.Services.wasm": "sha256-5maGKBbCTFx1LyDJaNSlx6S0+baLeZFYNyuQgzzKkMQ=",
-      "NuminaBit.Web.App.wasm": "sha256-pHYcFR9LdExyRRoNOp5KkX6eXemRQY5OAtN2IAQvQkc=",
+      "NuminaBit.Services.wasm": "sha256-RRY9AV/kK724XsCr5QfXac37S5ClrXxwPKnqV+Clxb4=",
+      "NuminaBit.Web.App.wasm": "sha256-em37fy1QXQLFrhjWlGgaiSR8JiKTr/LET5yU/6MKwAQ=",
       "Radzen.Blazor.wasm": "sha256-Uy38cYb4ZqpTOdvHgVDRMzZzlZVu277fH6XKKYN77TU=",
       "System.Collections.Concurrent.wasm": "sha256-ZS7MTjlQVFomr3KRKvusPcMU0Kl9WMstFhdjGUHXxKA=",
       "System.Collections.NonGeneric.wasm": "sha256-J6EDojWrHAa4E67V/gzGMSOx4dAGyIBql2zmqsSrxkI=",
