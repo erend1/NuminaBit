@@ -279,6 +279,75 @@ void test_present_speed_64mb(void)
     printf("CPU model: 11th Gen Intel(R) Core(TM) i5-1135G7 (2.42 GHz)\n");
 }
 
+#include "pride.h"
+#include "present_constants.h"
+
+static void test_pride_vector(const char* pt_hex, const char* k0_hex, const char* k1_hex, const char* ct_hex_expected)
+{
+    /* convert hex strings (16 hex chars -> 8 bytes little-endian? We'll parse as big-endian consistent with load64/save64)
+       For convenience use sscanf to parse 64-bit hex values. */
+    unsigned long long pt_v = 0, k0_v = 0, k1_v = 0, expected_v = 0;
+    int ret_pt = sscanf_s(pt_hex, "%llx", &pt_v);
+    if (ret_pt != 1) {
+        printf("Error parsing pt_hex\n");
+        return;
+    }
+    int ret_k0 = sscanf_s(k0_hex, "%llx", &k0_v);
+    if (ret_k0 != 1) {
+        printf("Error parsing k0_hex\n");
+        return;
+    }
+    int ret_k1 = sscanf_s(k1_hex, "%llx", &k1_v);
+    if (ret_k1 != 1) {
+        printf("Error parsing k1_hex\n");
+        return;
+    }
+    int ret_expected = sscanf_s(ct_hex_expected, "%llx", &expected_v);
+    if (ret_expected != 1) {
+        printf("Error parsing ct_hex_expected\n");
+        return;
+    }
+
+/* Build key128 = k0 || k1 as bytes big-endian (most significant byte first) to match load64/save64 convention */
+    bit8 key128[16];
+    for (int i = 0;i < 8;i++) key128[i] = (bit8)((k0_v >> (8 * (7 - i))) & 0xFFu);
+    for (int i = 0;i < 8;i++) key128[8 + i] = (bit8)((k1_v >> (8 * (7 - i))) & 0xFFu);
+
+    bit64 roundKeys[20];
+    bit64 k0, k2;
+    pride_key_schedule(key128, roundKeys, &k0, &k2);
+
+    /* plaintext as 64-bit */
+    bit64 pt = (bit64)pt_v;
+    /* if input endianness matters, ensure consistent use of load64/save64 in other APIs. Here we interpret everything big-endian consistently. */
+
+    bit64 ct = pride_encrypt_block(pt, roundKeys, k0, k2);
+
+    printf("PT: "); print_u64_hex_local(pt);
+    printf(" KEY0: "); print_u64_hex_local(k0_v);
+    printf(" KEY1: "); print_u64_hex_local(k1_v);
+    printf(" -> CT: "); print_u64_hex_local(ct);
+    printf("  (expected: "); print_u64_hex_local(expected_v); printf(")");
+    if (ct == (bit64)expected_v) printf(" OK\n"); else printf(" FAIL\n");
+}
+
+void test_pride()
+{
+    /* Test vectors from Appendix J (paper). Format: plaintext, k0, k1, ciphertext */
+    /* 1) all zero */
+    test_pride_vector("0000000000000000", "0000000000000000", "0000000000000000", "82b4109fcc70bd1f");
+    /* 2) plaintext all 1s */
+    test_pride_vector("ffffffffffffffff", "0000000000000000", "0000000000000000", "d70e60680a17b956");
+    /* 3) k0 zeros, k1 ones */
+    test_pride_vector("0000000000000000", "ffffffffffffffff", "0000000000000000", "28f19f97f5e846a9");
+    /* 4) k1 zeros, k2 ones */
+    test_pride_vector("0000000000000000", "0000000000000000", "ffffffffffffffff", "d123ebaf368fce62");
+    /* 5) sample */
+    test_pride_vector("0123456789abcdef", "0000000000000000", "fedcba9876543210", "d1372929712d336e");
+
+}
+
+
 int main(void)
 {
     run_paper_test_vectors();
@@ -286,8 +355,5 @@ int main(void)
     run_ascii_padding_example();
     run_present_cbc_example();
 	test_present_speed_64mb();
-
-	printf("\nPress Enter to exit...");
-    getchar();
     return 0;
 }

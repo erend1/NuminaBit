@@ -126,11 +126,13 @@
   <ItemGroup>
     <ClCompile Include="present.c" />
     <ClCompile Include="present_run.c" />
+    <ClCompile Include="pride.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="present.h" />
     <ClInclude Include="present_constants.h" />
+    <ClInclude Include="pride.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
