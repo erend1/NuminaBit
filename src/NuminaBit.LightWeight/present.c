@@ -5,6 +5,9 @@
 // Utilites
 #include "utils.c"
 
+// Standard libraries
+#include <string.h>
+
 /* PRESENT S-box (4 bit values represented as 8 bit) 
     defined in its original paper for encryption. */
 static const bit8 SBOX[16] = 
@@ -29,43 +32,70 @@ static const bit8 SBOX_INV[16] =
 // While the SBOX_INV could be computed programmatically, 
 // we define it explicitly here for clarity.
 
-/*  This method performs the bit permutation denoted as P(i). 
-    Takes input as 64 bit integer and returns again 64 bit permuted integer. 
-    The method uses the compact formula (instead of a large lookup defined 
-    in the original paper) which is defined as follows:
-        for i = 0..62 do P(i) = (16*i) % 63, and set P(63) = 63. */
+/* Bit permutation table for PRESENT cipher.
+   Bit i of the state is moved to bit position PBOX[i]. */
+static const unsigned char PBOX[64] = {
+     0, 16, 32, 48,  1, 17, 33, 49,
+     2, 18, 34, 50,  3, 19, 35, 51,
+     4, 20, 36, 52,  5, 21, 37, 53,
+     6, 22, 38, 54,  7, 23, 39, 55,
+     8, 24, 40, 56,  9, 25, 41, 57,
+    10, 26, 42, 58, 11, 27, 43, 59,
+    12, 28, 44, 60, 13, 29, 45, 61,
+    14, 30, 46, 62, 15, 31, 47, 63
+};
+
+/* Inverse bit permutation table for PRESENT cipher.
+   Bit i of the state is moved to bit position PBOX_INV[i]. */
+static const unsigned char PBOX_INV[64] = {
+     0,  4,  8, 12, 16, 20, 24, 28,
+    32, 36, 40, 44, 48, 52, 56, 60,
+     1,  5,  9, 13, 17, 21, 25, 29,
+    33, 37, 41, 45, 49, 53, 57, 61,
+     2,  6, 10, 14, 18, 22, 26, 30,
+    34, 38, 42, 46, 50, 54, 58, 62,
+     3,  7, 11, 15, 19, 23, 27, 31,
+    35, 39, 43, 47, 51, 55, 59, 63
+};
+// While the PBOX_INV could also be computed programmatically, 
+// we define it explicitly here for clarity.
+
+
+/*  This method performs the bit permutation layer (pLayer) of the
+    PRESENT cipher.
+    Takes input as 64 bit integer and returns again 64 bit permuted integer.
+    The permutation is performed using a static lookup table (PBOX),
+    where bit i of the input state is moved to bit position PBOX[i]. */
 static bit64 pLayer(bit64 state)
 {
     bit64 out = 0;
-    for (int i = 0; i < 63; i++) 
+    for (int i = 0; i < 64; i++)
     {
-        if ((state >> i) & BIT64_ONE) 
+        if ((state >> i) & BIT64_ONE)
         {
-            int pos = (16 * i) % 63;
-            out |= (BIT64_ONE << pos);
+            out |= (BIT64_ONE << PBOX[i]);
         }
     }
-    if ((state >> 63) & BIT64_ONE) 
-        out |= (BIT64_ONE << 63);
     return out;
 }
 
-/* This method performs the inverse bit permutation denoted as P^{-1}(i).
-    Takes input as permuted 64 bit integer and returns 64 bit non-permuted
-    integer. The method uses direct inverse calcualtion applied in pLayer. */
+/*  This method performs the inverse bit permutation layer (pLayerInv)
+    of the PRESENT cipher.
+    Takes input as 64 bit integer and returns again 64 bit permuted integer.
+    The inverse permutation is performed using a static lookup table
+    (PBOX_INV), where bit i of the input state is moved to bit position
+    PBOX_INV[i]. */
 static bit64 pLayerInv(bit64 state)
 {
-    bit64 tmp = 0;
-    for (int i = 0; i < 63; i++)
+    bit64 out = 0;
+    for (int i = 0; i < 64; i++)
     {
-        if ((state >> ((16 * i) % 63)) & BIT64_ONE)
+        if ((state >> i) & BIT64_ONE)
         {
-            tmp |= (BIT64_ONE << i);
+            out |= (BIT64_ONE << PBOX_INV[i]);
         }
     }
-    if ((state >> 63) & BIT64_ONE)
-        tmp |= (BIT64_ONE << 63);
-    return tmp;
+    return out;
 }
 
 /* This method performs the substitution denoted as S(w_i).

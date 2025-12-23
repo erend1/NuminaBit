@@ -288,6 +288,6 @@ int main(void)
 	test_present_speed_64mb();
 
 	printf("\nPress Enter to exit...");
-    getchar();
+    int temp = getchar();
     return 0;
 }
