@@ -124,13 +124,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="present.c" />
-    <ClCompile Include="present_run.c" />
-    <ClCompile Include="utils.c" />
+    <ClCompile Include="src\present.c" />
+    <ClCompile Include="apps\present_run.c" />
+    <ClCompile Include="src\utils.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="present.h" />
-    <ClInclude Include="present_constants.h" />
+    <ClInclude Include="include\present.h" />
+    <ClInclude Include="include\block_ciphers_constants.h" />
+    <ClInclude Include="include\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

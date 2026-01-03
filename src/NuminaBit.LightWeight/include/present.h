@@ -2,7 +2,7 @@
 
 #define PRESENT_H
 
-#include "present_constants.h"
+#include "block_ciphers_constants.h"
 
 /* This method is the key schedule of PRESENT.
 	The algorithm, produce 32 64 bit round keys from 80-bit

@@ -1,12 +1,10 @@
-﻿// Headers
-#include "present.h"
-#include "present_constants.h"
-
-// Utilites
-#include "utils.c"
-
-// Standard libraries
+﻿// Standard libraries
 #include <string.h>
+
+// Headers
+#include "..\include\utils.h"
+#include "..\include\present.h"
+#include "..\include\block_ciphers_constants.h"
 
 /* PRESENT S-box (4 bit values represented as 8 bit) 
     defined in its original paper for encryption. */
@@ -177,7 +175,7 @@ void present_key_schedule(const bit8 key80[10], bit64 roundKeys[32])
 
 	// Start counter from 1 to 32 for 32 rounds so that 
     // we can directly use it in the key update.
-    for (int round = 1; round <= 32; ++round) 
+    for (int round = 1; round <= 32; round++) 
     {
         // We simply set round key is leftmost 64 bits 
         // of the current state of the registery in the round.

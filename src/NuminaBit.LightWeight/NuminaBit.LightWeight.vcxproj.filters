@@ -15,21 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="present.c">
+    <ClCompile Include="src\present.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="present_run.c">
+    <ClCompile Include="apps\present_run.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils.c">
+    <ClCompile Include="src\utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="present.h">
+    <ClInclude Include="include\present.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="present_constants.h">
+    <ClInclude Include="include\block_ciphers_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

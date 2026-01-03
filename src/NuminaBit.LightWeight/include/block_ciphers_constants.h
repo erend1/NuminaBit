@@ -1,11 +1,11 @@
-#ifndef PRESENT_CONSTANTS_H
+#ifndef BLOCK_CIPHERS_CONSTANTS_H
 
-#define PRESENT_CONSTANTS_H
+#define BLOCK_CIPHERS_CONSTANTS_H
 
 #include <stdint.h> 
 
 // ================================================================
-//			PRESENT CIPHER NOTATIONS FOR READABILITY
+//			BLOCK CIPHERS NOTATIONS FOR READABILITY
 // ================================================================
 
 /* The type represents 8 bit integer. */

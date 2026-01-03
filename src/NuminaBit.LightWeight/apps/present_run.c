@@ -1,10 +1,12 @@
-﻿#include <time.h>
+﻿// Standard libraries
+#include <time.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
-#include "utils.c"
-#include "present.h"
+// Headers
+#include "..\include\utils.h"
+#include "..\include\present.h"
 
 // Test vectors from Appendix I of paper.
 static void run_paper_test_vectors(void)

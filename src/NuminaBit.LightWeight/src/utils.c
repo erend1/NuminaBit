@@ -1,25 +1,26 @@
 ﻿#include <stdio.h>
-#include "present_constants.h"
+#include "..\include\utils.h"                 
+#include "..\include\block_ciphers_constants.h"
 
 // ================================================================
 //			        PRESENT HELPER METHODS
 // ================================================================
 
 // This method is a helper to print hex.
-static void print_u64_hex(bit64 v)
+void print_u64_hex(bit64 v)
 {
     printf("%016llx", (unsigned long long)v);
 }
 
 // This method prints byte array in hex.
-static void print_hex(const bit8* data, int len)
+void print_hex(const bit8* data, int len)
 {
     for (int i = 0; i < len; i++)
         printf("%02x", data[i]);
 }
 
 /* This method removes Turkish-specific characters for ASCII convertion. */
-static char normalize_char(char c)
+char normalize_char(char c)
 {
     switch (c)
     {
@@ -40,7 +41,7 @@ static char normalize_char(char c)
 }
 
 /* This method simply converts a single char to its ASCII byte representation. */
-static bit8 get_ascii_char(char c)
+bit8 get_ascii_char(char c)
 {
     return (bit8) c;
 }
@@ -48,7 +49,7 @@ static bit8 get_ascii_char(char c)
 /* This method takes input as array of char object 
     and an byte array with max length threshold to convert ASCII 
     chars by normalizing the input and append to byte array. */
-static int ascii_to_bytes(const char* text, bit8 out[], int maxlen)
+int ascii_to_bytes(const char* text, bit8 out[], int maxlen)
 {
     int count = 0;
     while (*text && count < maxlen)
@@ -60,7 +61,7 @@ static int ascii_to_bytes(const char* text, bit8 out[], int maxlen)
 }
 
 /* This method performs the standard padding to the data. */
-static int standard_padding(uint8_t* data, int length)
+int standard_padding(uint8_t* data, int length)
 {
 	// Add 1 bit to indicate end of data.
     data[length] = BIT8_ONE << 7;
@@ -77,7 +78,7 @@ static int standard_padding(uint8_t* data, int length)
 }
 
 // This method is a simple helper to convert 8 bytes from array to 64 bit value.
-static bit64 load64(const bit8* p)
+bit64 load64(const bit8* p)
 {
     bit64 v = 0;
     for (int i = 0; i < 8; i++)
@@ -86,7 +87,7 @@ static bit64 load64(const bit8* p)
 }
 
 // This method is a simple helper to stores 64 bit in 8 bytes.
-static void save64(bit64 v, bit8* out)
+void save64(bit64 v, bit8* out)
 {
     for (int i = 7; i >= 0; i--)
     {
