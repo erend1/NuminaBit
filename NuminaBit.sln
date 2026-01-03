@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuminaBit.Services", "src\N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuminaBit.Console", "src\NuminaBit.Console\NuminaBit.Console.csproj", "{E331AEE3-C96B-231E-E0EF-E14098A443E5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NuminaBit.LightWeight", "src\NuminaBit.LightWeight\NuminaBit.LightWeight.vcxproj", "{CA96291B-8802-44C4-8216-4BB520F557C6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NuminaBit.Lightweight.Console", "src\NuminaBit.Lightweight.Console\NuminaBit.LightWeight.Console.vcxproj", "{CA96291B-8802-44C4-8216-4BB520F557C6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NuminaBit.Lightweight", "src\NuminaBit.Lightweight\NuminaBit.Lightweight.vcxproj", "{A297503F-6ED9-49C5-908B-81BE2192208B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,18 @@ Global
 		{CA96291B-8802-44C4-8216-4BB520F557C6}.Release|x64.Build.0 = Release|x64
 		{CA96291B-8802-44C4-8216-4BB520F557C6}.Release|x86.ActiveCfg = Release|Win32
 		{CA96291B-8802-44C4-8216-4BB520F557C6}.Release|x86.Build.0 = Release|Win32
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Debug|Any CPU.Build.0 = Debug|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Debug|x64.ActiveCfg = Debug|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Debug|x64.Build.0 = Debug|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Debug|x86.ActiveCfg = Debug|Win32
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Debug|x86.Build.0 = Debug|Win32
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Release|Any CPU.ActiveCfg = Release|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Release|Any CPU.Build.0 = Release|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Release|x64.ActiveCfg = Release|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Release|x64.Build.0 = Release|x64
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Release|x86.ActiveCfg = Release|Win32
+		{A297503F-6ED9-49C5-908B-81BE2192208B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,9 +2,9 @@
 #include <string.h>
 
 // Headers
-#include "..\include\utils.h"
-#include "..\include\present.h"
-#include "..\include\block_ciphers_constants.h"
+#include "utils.h"
+#include "present.h"
+#include "block_ciphers_constants.h"
 
 /* PRESENT S-box (4 bit values represented as 8 bit) 
     defined in its original paper for encryption. */

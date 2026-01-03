@@ -5,8 +5,9 @@
 #include <string.h>
 
 // Headers
-#include "..\include\utils.h"
-#include "..\include\present.h"
+#include "utils.h"
+#include "present.h"
+#include "block_ciphers_constants.h"
 
 // Test vectors from Appendix I of paper.
 static void run_paper_test_vectors(void)
@@ -281,15 +282,11 @@ void test_present_speed_64mb(void)
     printf("CPU model: 11th Gen Intel(R) Core(TM) i5-1135G7 (2.42 GHz)\n");
 }
 
-int main(void)
+void run_present_demo()
 {
     run_paper_test_vectors();
     run_homework_test_vectors();
     run_ascii_padding_example();
     run_present_cbc_example();
 	test_present_speed_64mb();
-
-	printf("\nPress Enter to exit...");
-    int temp = getchar();
-    return 0;
 }
